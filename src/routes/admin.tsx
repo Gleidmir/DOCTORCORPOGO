@@ -1828,25 +1828,25 @@ function AdminDashboard() {
                     className="space-y-4"
                   >
                     <div>
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Nome da Clínica</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-300">Nome da Clínica</label>
                       <input
                         type="text"
                         required
                         value={shopName}
                         onChange={(e) => setShopName(e.target.value)}
                         placeholder="Ex: DoctorCorpo Clínica"
-                        className="w-full rounded-xl bg-zinc-950/90 px-4 py-3.5 text-sm text-white placeholder:text-zinc-600 ring-1 ring-zinc-800 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all mt-1.5"
+                        className="w-full rounded-xl bg-zinc-900/90 px-4 py-3.5 text-sm text-white placeholder:text-zinc-500 border border-zinc-700 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all mt-1.5"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Link do Logotipo / Imagem (URL)</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-300">Link do Logotipo / Imagem (URL)</label>
                       <input
                         type="url"
                         value={shopLogoUrl}
                         onChange={(e) => setShopLogoUrl(e.target.value)}
                         placeholder="Ex: https://link-da-imagem.com/logo.png"
-                        className="w-full rounded-xl bg-zinc-950/90 px-4 py-3.5 text-sm text-white placeholder:text-zinc-600 ring-1 ring-zinc-800 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all mt-1.5"
+                        className="w-full rounded-xl bg-zinc-900/90 px-4 py-3.5 text-sm text-white placeholder:text-zinc-500 border border-zinc-700 focus:border-amber-500 focus:outline-none transition-all mt-1.5"
                       />
                       <p className="text-[10px] text-zinc-500 mt-1.5 leading-relaxed">
                         Copie e cole o endereço/link de uma foto pública (do Instagram, Facebook, Imgur, Postimages, etc.). Se não colocar nenhuma imagem, será usada a logo temática padrão de Goiás.

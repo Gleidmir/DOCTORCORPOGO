@@ -22,7 +22,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<"client" | "admin">("client");
+  const [activeTab, setActiveTab] = useState<"client" | "admin">("admin");
   const [loading, setLoading] = useState(false);
   const [isClientOnly, setIsClientOnly] = useState(false);
   const [shopProfile, setShopProfile] = useState<any>(null);
@@ -56,6 +56,7 @@ function LoginPage() {
           getBarberShopProfile(tenant).then(setShopProfile);
         } else {
           setIsClientOnly(false);
+          setActiveTab("admin");
           const storedTenant = window.localStorage.getItem("mbg_client_tenant");
           if (storedTenant) {
             getBarberShopProfile(storedTenant).then(setShopProfile);
@@ -215,24 +216,9 @@ function LoginPage() {
               )}
             </h1>
             <p className="text-zinc-500 text-xs mt-1 text-center">
-              {isAdminOverride ? "Identifique-se para acessar o painel" : isClientOnly ? "Identifique-se para Agendar sua Consulta" : "Selecione como deseja acessar"}
+              {activeTab === "admin" ? "Acesse sua conta para gerenciar a clínica" : "Identifique-se para agendar sua consulta"}
             </p>
           </div>
- 
-          {/* Role selection tab */}
-          {isAdminOverride ? (
-            <div className="flex justify-center mb-6">
-              <span className="rounded-xl bg-gold-gradient text-zinc-950 px-8 py-2.5 text-xs font-black uppercase shadow-md glow-gold-sm tracking-wider select-none">
-                CLÍNICA / ADM
-              </span>
-            </div>
-          ) : (
-            <div className="flex justify-center mb-6">
-              <span className="rounded-xl bg-amber-500 text-zinc-950 px-8 py-2.5 text-xs font-black uppercase shadow-md glow-emerald-sm tracking-wider select-none">
-                CLIENTE
-              </span>
-            </div>
-          )}
 
           {activeTab === "client" ? (
             /* CLIENT FORM */
@@ -275,19 +261,6 @@ function LoginPage() {
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "AGENDAR MINHA CONSULTA →"}
               </button>
-
-              <div className="text-center mt-6">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsAdminOverride(true);
-                    setActiveTab("admin");
-                  }}
-                  className="text-xs text-amber-500 hover:text-amber-400 font-bold transition-colors cursor-pointer"
-                >
-                  Acesso Clínicas / Administrador →
-                </button>
-              </div>
             </form>
           ) : (
             /* ADMIN FORM */
@@ -329,19 +302,6 @@ function LoginPage() {
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin text-zinc-950" /> : "ENTRAR NO PAINEL →"}
               </button>
-
-              <div className="text-center mt-6">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsAdminOverride(false);
-                    setActiveTab("client");
-                  }}
-                  className="text-xs text-zinc-500 hover:text-zinc-400 font-bold transition-colors cursor-pointer"
-                >
-                  ← Voltar para Agendamento do Cliente
-                </button>
-              </div>
             </form>
           )}
         </div>
