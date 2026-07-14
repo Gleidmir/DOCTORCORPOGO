@@ -544,7 +544,7 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
 
     const dateStr = new Date(selectedDate + "T12:00:00").toLocaleDateString("pt-BR");
     const shopName = shopProfile?.name || "nossa clínica";
-    const message = `Olá, ${selectedBarber.name}! Acabei de realizar um agendamento na clínica ${shopName}:\n\n` +
+    const message = `Olá, ${selectedBarber.name}! Acabei de realizar um agendamento na clínica *${shopName}*:\n\n` +
       `👤 *Cliente:* ${customClientName}\n` +
       `📞 *Telefone:* ${customClientPhone}\n` +
       `💇 *Procedimento:* ${selectedService.name}\n` +
@@ -672,12 +672,48 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
       {/* STEP 1: SERVICE SELECTION */}
       {step === "service" && (
         <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+          <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl p-5 mb-5 space-y-4 shadow-xl">
+            <p className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold">Identificação do Cliente</p>
+            <div className="space-y-3">
+              <div>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Nome do Cliente</label>
+                <input
+                  type="text"
+                  required
+                  value={customClientName}
+                  onChange={(e) => setCustomClientName(e.target.value)}
+                  placeholder="Ex: João da Silva"
+                  className="w-full rounded-xl bg-zinc-800 mt-1 px-3.5 py-2.5 text-xs text-amber-400 font-extrabold placeholder:text-zinc-400 border border-zinc-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">WhatsApp (com DDD)</label>
+                <input
+                  type="tel"
+                  required
+                  value={customClientPhone}
+                  onChange={(e) => setCustomClientPhone(e.target.value.replace(/\D/g, ""))}
+                  placeholder="Ex: 62999998888"
+                  className="w-full rounded-xl bg-zinc-800 mt-1 px-3.5 py-2.5 text-xs text-amber-400 font-extrabold placeholder:text-zinc-400 border border-zinc-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"
+                />
+              </div>
+            </div>
+          </div>
+
           <h2 className="text-sm font-bold text-zinc-300 mb-3 px-1 uppercase tracking-wider">Serviços</h2>
           <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
             {services.map((svc) => (
               <button
                 key={svc.id}
                 onClick={() => {
+                  if (!customClientName.trim()) {
+                    toast.error("Por favor, preencha o seu nome no formulário de identificação no topo.");
+                    return;
+                  }
+                  if (customClientPhone.replace(/\D/g, "").length < 10) {
+                    toast.error("Por favor, informe um número de WhatsApp válido com DDD no topo.");
+                    return;
+                  }
                   setSelectedService(svc);
                   setStep("barber");
                 }}
@@ -756,7 +792,7 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
           <div className="mt-6 flex gap-3">
             <button
               onClick={() => setStep("service")}
-              className="flex-1 rounded-xl border border-amber-500/50 text-amber-400 hover:bg-amber-600 hover:text-white hover:border-amber-500 transition-all py-3.5 text-xs font-black active:scale-95 shadow-md shadow-amber-500/5 hover:shadow-amber-500/15 cursor-pointer"
+              className="flex-1 rounded-xl bg-amber-600 text-zinc-950 hover:bg-amber-500 transition-all py-3.5 text-xs font-black active:scale-95 shadow-md shadow-amber-500/10 cursor-pointer"
             >
               Voltar
             </button>
@@ -899,7 +935,7 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
           <div className="mt-6 flex gap-3">
             <button
               onClick={() => setStep("barber")}
-              className="flex-1 rounded-xl border border-amber-500/50 text-amber-400 hover:bg-amber-600 hover:text-white hover:border-amber-500 transition-all py-3.5 text-xs font-black active:scale-95 shadow-md shadow-amber-500/5 hover:shadow-amber-500/15 cursor-pointer"
+              className="flex-1 rounded-xl bg-amber-600 text-zinc-950 hover:bg-amber-500 transition-all py-3.5 text-xs font-black active:scale-95 shadow-md shadow-amber-500/10 cursor-pointer"
             >
               Voltar
             </button>
@@ -942,7 +978,7 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
               </div>
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold">Duração</p>
-                <p className="font-bold text-white mt-0.5">{formatDuration(selectedService.duration)}</p>
+                <p className="font-bold text-amber-400 mt-0.5">{formatDuration(selectedService.duration)}</p>
               </div>
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold">Data</p>
@@ -960,29 +996,14 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
               </div>
             </div>
 
-            <div className="pt-3 border-t border-zinc-800 text-xs space-y-3">
-              <p className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold">Dados do Agendamento</p>
-              <div>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Nome do Cliente</label>
-                <input
-                  type="text"
-                  required
-                  value={customClientName}
-                  onChange={(e) => setCustomClientName(e.target.value)}
-                  placeholder="Ex: João da Silva"
-                  className="w-full rounded-xl bg-zinc-800 mt-1 px-3.5 py-2.5 text-xs text-white placeholder:text-zinc-400 border border-zinc-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"
-                />
+            <div className="pt-3 border-t border-zinc-800 text-xs space-y-2.5">
+              <div className="flex justify-between">
+                <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold">Nome do Cliente</span>
+                <span className="font-bold text-amber-400 uppercase">{customClientName}</span>
               </div>
-              <div>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">WhatsApp (com DDD)</label>
-                <input
-                  type="tel"
-                  required
-                  value={customClientPhone}
-                  onChange={(e) => setCustomClientPhone(e.target.value.replace(/\D/g, ""))}
-                  placeholder="Ex: 62999998888"
-                  className="w-full rounded-xl bg-zinc-800 mt-1 px-3.5 py-2.5 text-xs text-white placeholder:text-zinc-400 border border-zinc-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"
-                />
+              <div className="flex justify-between">
+                <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold">WhatsApp (com DDD)</span>
+                <span className="font-bold text-amber-400">{customClientPhone}</span>
               </div>
             </div>
           </div>
@@ -992,7 +1013,7 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
               type="button"
               disabled={loading}
               onClick={() => setStep("datetime")}
-              className="flex-1 rounded-xl border border-amber-500/50 text-amber-400 hover:bg-amber-600 hover:text-white hover:border-amber-500 transition-all py-3.5 text-xs font-black active:scale-95 shadow-md shadow-amber-500/5 hover:shadow-amber-500/15 cursor-pointer"
+              className="flex-1 rounded-xl bg-amber-600 text-zinc-950 hover:bg-amber-500 transition-all py-3.5 text-xs font-black active:scale-95 shadow-md shadow-amber-500/10 cursor-pointer"
             >
               Voltar
             </button>
@@ -1047,24 +1068,24 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
 
             <div className="space-y-3 pt-5 text-xs font-mono text-zinc-300">
               <div className="flex justify-between">
-                <span className="text-zinc-500">ESTABELECIMENTO:</span>
-                <span className="text-white font-extrabold uppercase">{shopProfile?.name || "DoctorCorpo GO"}</span>
+                <span className="text-white font-black tracking-wider uppercase">ESTABELECIMENTO:</span>
+                <span className="text-amber-400 font-extrabold uppercase">{shopProfile?.name || "DoctorCorpo GO"}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500">PROCEDIMENTO:</span>
-                <span className="text-white font-extrabold">{selectedService.name}</span>
+                <span className="text-white font-black tracking-wider uppercase">PROCEDIMENTO:</span>
+                <span className="text-amber-400 font-extrabold uppercase">{selectedService.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500">VALOR:</span>
-                <span className="text-amber-400 font-extrabold">{formatPrice(selectedService.price)}</span>
+                <span className="text-white font-black tracking-wider uppercase">VALOR:</span>
+                <span className="text-amber-400 font-extrabold uppercase">{formatPrice(selectedService.price)}</span>
               </div>
-              <div className="flex justify-between items-center py-1">
-                <span className="text-white font-black tracking-wider uppercase">PROFISSIONAL</span>
-                <span className="text-amber-400 font-extrabold">{selectedBarber.name}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-white font-black tracking-wider uppercase">PROFISSIONAL:</span>
+                <span className="text-amber-400 font-extrabold uppercase">{selectedBarber.name}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-white font-black tracking-wider uppercase">CLIENTE:</span>
-                <span className="text-amber-400 font-extrabold">{customClientName}</span>
+                <span className="text-amber-400 font-extrabold uppercase">{customClientName}</span>
               </div>
             </div>
           </div>
@@ -1218,7 +1239,7 @@ function MyAppointments({ clientPhone, shopProfile }: MyAppointmentsProps) {
 
     const dateStr = new Date(apt.date + "T12:00:00").toLocaleDateString("pt-BR");
     const shopName = shopProfile?.name || "nossa clínica";
-    const message = `Olá, ${apt.barberName}! Sou o cliente ${apt.clientName} e estou enviando esta mensagem para confirmar meu agendamento na clínica ${shopName}:\n\n` +
+    const message = `Olá, ${apt.barberName}! Sou o cliente ${apt.clientName} e estou enviando esta mensagem para confirmar meu agendamento na clínica *${shopName}*:\n\n` +
       `💇 *Procedimento:* ${apt.serviceName}\n` +
       `📅 *Data:* ${dateStr}\n` +
       `⏰ *Horário:* ${apt.time}\n\n` +
