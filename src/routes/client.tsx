@@ -672,48 +672,12 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
       {/* STEP 1: SERVICE SELECTION */}
       {step === "service" && (
         <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-          <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl p-5 mb-5 space-y-4 shadow-xl">
-            <p className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold">Identificação do Cliente</p>
-            <div className="space-y-3">
-              <div>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Nome do Cliente</label>
-                <input
-                  type="text"
-                  required
-                  value={customClientName}
-                  onChange={(e) => setCustomClientName(e.target.value)}
-                  placeholder="Ex: João da Silva"
-                  className="w-full rounded-xl bg-zinc-800 mt-1 px-3.5 py-2.5 text-xs text-amber-400 font-extrabold placeholder:text-zinc-400 border border-zinc-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"
-                />
-              </div>
-              <div>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">WhatsApp (com DDD)</label>
-                <input
-                  type="tel"
-                  required
-                  value={customClientPhone}
-                  onChange={(e) => setCustomClientPhone(e.target.value.replace(/\D/g, ""))}
-                  placeholder="Ex: 62999998888"
-                  className="w-full rounded-xl bg-zinc-800 mt-1 px-3.5 py-2.5 text-xs text-amber-400 font-extrabold placeholder:text-zinc-400 border border-zinc-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"
-                />
-              </div>
-            </div>
-          </div>
-
           <h2 className="text-sm font-bold text-zinc-300 mb-3 px-1 uppercase tracking-wider">Serviços</h2>
           <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
             {services.map((svc) => (
               <button
                 key={svc.id}
                 onClick={() => {
-                  if (!customClientName.trim()) {
-                    toast.error("Por favor, preencha o seu nome no formulário de identificação no topo.");
-                    return;
-                  }
-                  if (customClientPhone.replace(/\D/g, "").length < 10) {
-                    toast.error("Por favor, informe um número de WhatsApp válido com DDD no topo.");
-                    return;
-                  }
                   setSelectedService(svc);
                   setStep("barber");
                 }}
