@@ -587,8 +587,8 @@ function AdminDashboard() {
     }
     
     const dateStr = new Date(apt.date + "T12:00:00").toLocaleDateString("pt-BR");
-    const nameToUse = shopName || "nossa clínica";
-    const message = `Olá, ${apt.clientName}! Passando para lembrar do seu agendamento na clínica ${nameToUse}:\n\n` +
+    const nameToUse = shopName ? shopName.toUpperCase() : "NOSSA CLÍNICA";
+    const message = `Olá, ${apt.clientName}! Passando para lembrar do seu agendamento na clínica *${nameToUse}*:\n\n` +
       `💇 *Procedimento:* ${apt.serviceName}\n` +
       `📅 *Data:* ${dateStr}\n` +
       `⏰ *Horário:* ${apt.time}\n` +
@@ -925,7 +925,7 @@ function AdminDashboard() {
                   <a
                     href={`https://wa.me/?text=${encodeURIComponent(
                       shopName
-                        ? `Olá! Agende sua consulta na clínica ${shopName} online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email || "default"}`
+                        ? `Olá! Agende sua consulta na clínica *${shopName.toUpperCase()}* online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email || "default"}`
                         : `Olá! Agende sua consulta na nossa clínica online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email || "default"}`
                     )}`}
                     target="_blank"

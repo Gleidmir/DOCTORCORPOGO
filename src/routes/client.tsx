@@ -543,7 +543,7 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
     }
 
     const dateStr = new Date(selectedDate + "T12:00:00").toLocaleDateString("pt-BR");
-    const shopName = shopProfile?.name || "nossa clínica";
+    const shopName = shopProfile?.name ? shopProfile.name.toUpperCase() : "NOSSA CLÍNICA";
     const message = `Olá, ${selectedBarber.name}! Acabei de realizar um agendamento na clínica *${shopName}*:\n\n` +
       `👤 *Cliente:* ${customClientName}\n` +
       `📞 *Telefone:* ${customClientPhone}\n` +
@@ -1067,25 +1067,25 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
             </div>
 
             <div className="space-y-3 pt-5 text-xs font-mono text-zinc-300">
-              <div className="flex justify-between">
-                <span className="text-white font-black tracking-wider uppercase">ESTABELECIMENTO:</span>
-                <span className="text-amber-400 font-extrabold uppercase">{shopProfile?.name || "DoctorCorpo GO"}</span>
+              <div className="flex justify-between gap-4">
+                <span className="text-white font-black tracking-wider uppercase shrink-0">ESTABELECIMENTO:</span>
+                <span className="text-amber-400 font-extrabold uppercase text-right">{shopProfile?.name || "DoctorCorpo GO"}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-white font-black tracking-wider uppercase">PROCEDIMENTO:</span>
-                <span className="text-amber-400 font-extrabold uppercase">{selectedService.name}</span>
+              <div className="flex justify-between gap-4">
+                <span className="text-white font-black tracking-wider uppercase shrink-0">PROCEDIMENTO:</span>
+                <span className="text-amber-400 font-extrabold uppercase text-right">{selectedService.name}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-white font-black tracking-wider uppercase">VALOR:</span>
-                <span className="text-amber-400 font-extrabold uppercase">{formatPrice(selectedService.price)}</span>
+              <div className="flex justify-between gap-4">
+                <span className="text-white font-black tracking-wider uppercase shrink-0">VALOR:</span>
+                <span className="text-amber-400 font-extrabold uppercase text-right">{formatPrice(selectedService.price)}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-white font-black tracking-wider uppercase">PROFISSIONAL:</span>
-                <span className="text-amber-400 font-extrabold uppercase">{selectedBarber.name}</span>
+              <div className="flex justify-between items-center gap-4">
+                <span className="text-white font-black tracking-wider uppercase shrink-0">PROFISSIONAL:</span>
+                <span className="text-amber-400 font-extrabold uppercase text-right">{selectedBarber.name}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-white font-black tracking-wider uppercase">CLIENTE:</span>
-                <span className="text-amber-400 font-extrabold uppercase">{customClientName}</span>
+              <div className="flex justify-between gap-4">
+                <span className="text-white font-black tracking-wider uppercase shrink-0">CLIENTE:</span>
+                <span className="text-amber-400 font-extrabold uppercase text-right">{customClientName}</span>
               </div>
             </div>
           </div>
@@ -1238,7 +1238,7 @@ function MyAppointments({ clientPhone, shopProfile }: MyAppointmentsProps) {
     }
 
     const dateStr = new Date(apt.date + "T12:00:00").toLocaleDateString("pt-BR");
-    const shopName = shopProfile?.name || "nossa clínica";
+    const shopName = shopProfile?.name ? shopProfile.name.toUpperCase() : "NOSSA CLÍNICA";
     const message = `Olá, ${apt.barberName}! Sou o cliente ${apt.clientName} e estou enviando esta mensagem para confirmar meu agendamento na clínica *${shopName}*:\n\n` +
       `💇 *Procedimento:* ${apt.serviceName}\n` +
       `📅 *Data:* ${dateStr}\n` +
