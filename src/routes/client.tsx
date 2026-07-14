@@ -212,7 +212,7 @@ function ClientDashboard() {
               </span>
               <button
                 onClick={handleLogout}
-                className="p-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-red-400 border border-zinc-800 transition-colors cursor-pointer flex items-center justify-center"
+                className="p-1.5 rounded-lg bg-red-950/30 border border-red-500/50 hover:bg-red-650 hover:border-red-500 text-red-400 hover:text-white transition-all cursor-pointer flex items-center justify-center shadow-md active:scale-95"
                 title="Sair"
               >
                 <LogOut className="h-3.5 w-3.5" />
@@ -278,7 +278,7 @@ function ClientDashboard() {
             </span>
             <button
               onClick={handleLogout}
-              className="p-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-red-400 border border-zinc-800 transition-colors cursor-pointer flex items-center justify-center"
+              className="p-1.5 rounded-lg bg-red-950/30 border border-red-500/50 hover:bg-red-650 hover:border-red-500 text-red-400 hover:text-white transition-all cursor-pointer flex items-center justify-center shadow-md active:scale-95"
               title="Sair"
             >
               <LogOut className="h-3.5 w-3.5" />

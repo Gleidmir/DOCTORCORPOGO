@@ -705,7 +705,7 @@ function AdminDashboard() {
             <div className="flex items-center gap-2 sm:gap-4 shrink-0">
               <button
                 onClick={handleLogout}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-red-400 px-3 sm:px-4 py-2 text-xs font-bold border border-zinc-800 transition-colors cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-950/30 border border-red-500/50 hover:bg-red-650 hover:border-red-500 text-red-400 hover:text-white px-3 sm:px-4 py-2 text-xs font-black transition-all cursor-pointer shadow-lg shadow-red-500/5 hover:shadow-red-500/20 active:scale-95"
                 title="Sair"
               >
                 <LogOut className="h-4 w-4 shrink-0" /> <span className="hidden sm:inline">Sair</span>
@@ -793,7 +793,7 @@ function AdminDashboard() {
             <button
               onClick={() => loadAllData(false)}
               disabled={loading}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white px-3 sm:px-4 py-2 text-xs font-bold border border-zinc-800 transition-colors cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-950/40 border border-amber-500/50 hover:bg-amber-600 hover:border-amber-400 text-amber-400 hover:text-white px-3 sm:px-4 py-2 text-xs font-black transition-all cursor-pointer shadow-lg shadow-amber-500/5 hover:shadow-amber-500/20 active:scale-95 disabled:opacity-50"
               title="Atualizar Dados"
             >
               <RefreshCw className={`h-4 w-4 shrink-0 ${loading ? 'animate-spin' : ''}`} /> <span className="hidden sm:inline">Atualizar</span>
@@ -807,7 +807,7 @@ function AdminDashboard() {
             </button>
             <button
               onClick={handleLogout}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-red-400 px-3 sm:px-4 py-2 text-xs font-bold border border-zinc-800 transition-colors cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-950/30 border border-red-500/50 hover:bg-red-650 hover:border-red-500 text-red-400 hover:text-white px-3 sm:px-4 py-2 text-xs font-black transition-all cursor-pointer shadow-lg shadow-red-500/5 hover:shadow-red-500/20 active:scale-95"
               title="Sair"
             >
               <LogOut className="h-4 w-4 shrink-0" /> <span className="hidden sm:inline">Sair</span>
