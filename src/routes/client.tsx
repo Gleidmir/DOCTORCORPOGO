@@ -207,8 +207,8 @@ function ClientDashboard() {
             </div>
             <div className="flex items-center gap-2.5">
               <span className="text-xs text-zinc-400 font-medium flex flex-col items-end">
-                <span>Olá, {session.name}</span>
-                <span className="text-[9px] text-zinc-500 font-mono tracking-tight mt-0.5">{session.phone}</span>
+                <span>Olá, <span className="text-amber-400 font-black">{session.name}</span></span>
+                <span className="text-[9px] text-amber-300/80 font-mono tracking-tight mt-0.5">{session.phone}</span>
               </span>
               <button
                 onClick={handleLogout}
@@ -273,8 +273,8 @@ function ClientDashboard() {
           </div>
           <div className="flex items-center gap-2.5">
             <span className="text-xs text-zinc-400 font-medium flex flex-col items-end">
-              <span>Olá, {session.name}</span>
-              <span className="text-[9px] text-zinc-500 font-mono tracking-tight mt-0.5">{session.phone}</span>
+              <span>Olá, <span className="text-amber-400 font-black">{session.name}</span></span>
+              <span className="text-[9px] text-amber-300/80 font-mono tracking-tight mt-0.5">{session.phone}</span>
             </span>
             <button
               onClick={handleLogout}
@@ -295,7 +295,7 @@ function ClientDashboard() {
             className={`flex-1 rounded-xl py-2.5 text-xs font-bold transition-all border ${
               activeTab === "book"
                 ? "bg-amber-500 text-zinc-950 border-amber-500 glow-emerald shadow-lg shadow-amber-500/10"
-                : "bg-zinc-900/60 text-zinc-400 border-zinc-800 hover:text-white"
+                : "bg-zinc-900/60 text-amber-400/80 border-amber-500/15 shadow-[0_0_10px_rgba(20,184,166,0.06)] hover:text-white hover:bg-zinc-800/60 hover:border-amber-500/30"
             }`}
           >
             Agendar Horário
@@ -305,7 +305,7 @@ function ClientDashboard() {
             className={`flex-1 rounded-xl py-2.5 text-xs font-bold transition-all border ${
               activeTab === "my-appointments"
                 ? "bg-amber-500 text-zinc-950 border-amber-500 glow-emerald shadow-lg shadow-amber-500/10"
-                : "bg-zinc-900/60 text-zinc-400 border-zinc-800 hover:text-white"
+                : "bg-zinc-900/60 text-amber-400/80 border-amber-500/15 shadow-[0_0_10px_rgba(20,184,166,0.06)] hover:text-white hover:bg-zinc-800/60 hover:border-amber-500/30"
             }`}
           >
             Meus Agendamentos
@@ -717,7 +717,7 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
             <div className="mb-4 bg-zinc-900/30 border border-zinc-800/40 rounded-xl p-3 flex items-center gap-3">
               <ShopCircleLogo profile={shopProfile} />
               <div>
-                <p className="text-[9px] uppercase tracking-wider text-zinc-500 font-bold">Procedimento Selecionado</p>
+                <p className="text-[9px] uppercase tracking-wider text-amber-400 font-extrabold">Procedimento Selecionado</p>
                 <p className="text-xs font-bold text-white">{selectedService.name}</p>
                 <p className="text-xs text-sky-400 font-bold">{formatPrice(selectedService.price)}</p>
               </div>
@@ -743,7 +743,11 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
                   alt={barber.name}
                   className="w-14 h-14 rounded-full object-cover mb-2 border-2 border-zinc-800 shadow"
                 />
-                <span className="text-xs font-black tracking-wider uppercase">{barber.name}</span>
+                <span className={`text-xs font-black tracking-wider uppercase ${
+                  selectedBarber?.id === barber.id ? "text-zinc-950" : "text-amber-400"
+                }`}>
+                  {barber.name}
+                </span>
                 <span className="text-[10px] opacity-65 mt-1 font-bold">Especialista</span>
               </button>
             ))}
@@ -752,7 +756,7 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
           <div className="mt-6 flex gap-3">
             <button
               onClick={() => setStep("service")}
-              className="flex-1 rounded-xl border border-yellow-500/40 text-yellow-500 hover:bg-yellow-500 hover:text-zinc-950 transition-all py-3.5 text-xs font-bold active:scale-95"
+              className="flex-1 rounded-xl border border-amber-500/50 text-amber-400 hover:bg-amber-600 hover:text-white hover:border-amber-500 transition-all py-3.5 text-xs font-black active:scale-95 shadow-md shadow-amber-500/5 hover:shadow-amber-500/15 cursor-pointer"
             >
               Voltar
             </button>
@@ -895,7 +899,7 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
           <div className="mt-6 flex gap-3">
             <button
               onClick={() => setStep("barber")}
-              className="flex-1 rounded-xl border border-yellow-500/40 text-yellow-500 hover:bg-yellow-500 hover:text-zinc-950 transition-all py-3.5 text-xs font-bold active:scale-95"
+              className="flex-1 rounded-xl border border-amber-500/50 text-amber-400 hover:bg-amber-600 hover:text-white hover:border-amber-500 transition-all py-3.5 text-xs font-black active:scale-95 shadow-md shadow-amber-500/5 hover:shadow-amber-500/15 cursor-pointer"
             >
               Voltar
             </button>
@@ -988,7 +992,7 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
               type="button"
               disabled={loading}
               onClick={() => setStep("datetime")}
-              className="flex-1 rounded-xl border border-yellow-500/40 text-yellow-500 hover:bg-yellow-500 hover:text-zinc-950 transition-all py-3.5 text-xs font-bold active:scale-95"
+              className="flex-1 rounded-xl border border-amber-500/50 text-amber-400 hover:bg-amber-600 hover:text-white hover:border-amber-500 transition-all py-3.5 text-xs font-black active:scale-95 shadow-md shadow-amber-500/5 hover:shadow-amber-500/15 cursor-pointer"
             >
               Voltar
             </button>
@@ -1016,7 +1020,7 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
             Seu horário foi agendado e enviado para a clínica. Te esperamos lá!
           </p>
 
-          <div className="bg-zinc-900/60 border border-amber-500/20 rounded-3xl p-5 my-6 text-left relative overflow-hidden holo-card glow-gold shadow-2xl">
+          <div className="bg-zinc-900/60 border border-amber-500/20 rounded-3xl p-5 my-6 text-left relative overflow-hidden holo-card glow-emerald shadow-2xl">
             {/* Holographic glowing backdrops */}
             <div className="absolute -left-12 -top-12 w-24 h-24 rounded-full bg-amber-500/10 blur-2xl pointer-events-none" />
             <div className="absolute -right-12 -bottom-12 w-24 h-24 rounded-full bg-emerald-500/10 blur-2xl pointer-events-none" />
@@ -1031,7 +1035,7 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
                 Comprovante de Reserva VIP
                 <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
               </span>
-              <p className="text-2xl font-mono text-white font-extrabold mt-2 tracking-wide glow-gold-sm">{selectedTime}</p>
+              <p className="text-2xl font-mono text-white font-extrabold mt-2 tracking-wide glow-emerald-sm">{selectedTime}</p>
               <p className="text-xs text-zinc-400 font-medium">
                 {new Date(selectedDate + "T12:00:00").toLocaleDateString("pt-BR", {
                   weekday: "long",
@@ -1054,13 +1058,13 @@ function BookingFlow({ clientPhone, clientName, shopProfile, onSessionUpdate, on
                 <span className="text-zinc-500">VALOR:</span>
                 <span className="text-amber-400 font-extrabold">{formatPrice(selectedService.price)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-500">PROFISSIONAL:</span>
-                <span className="text-white font-extrabold">{selectedBarber.name}</span>
+              <div className="flex justify-between items-center py-1">
+                <span className="text-white font-black tracking-wider uppercase">PROFISSIONAL</span>
+                <span className="text-amber-400 font-extrabold">{selectedBarber.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500">CLIENTE:</span>
-                <span className="text-white font-extrabold">{customClientName}</span>
+                <span className="text-white font-black tracking-wider uppercase">CLIENTE:</span>
+                <span className="text-amber-400 font-extrabold">{customClientName}</span>
               </div>
             </div>
           </div>

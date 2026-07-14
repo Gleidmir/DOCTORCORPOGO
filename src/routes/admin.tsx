@@ -874,8 +874,8 @@ function AdminDashboard() {
               onClick={() => setActiveTab(tab.id)}
               className={`w-full flex items-center justify-between rounded-xl px-4 py-3 text-xs font-bold transition-all border ${
                 activeTab === tab.id
-                  ? "bg-gold-gradient text-zinc-950 border-transparent shadow-lg glow-gold-sm font-black"
-                  : "bg-zinc-900/40 text-zinc-400 border-zinc-900/40 hover:text-white hover:bg-zinc-800/60"
+                  ? "bg-emerald-gradient text-zinc-950 border-transparent shadow-lg glow-emerald-sm font-black"
+                  : "bg-zinc-900/40 text-zinc-400 border-amber-500/15 shadow-[0_0_10px_rgba(20,184,166,0.06)] hover:text-white hover:bg-zinc-800/60 hover:border-amber-500/30 hover:shadow-[0_0_12px_rgba(20,184,166,0.12)]"
               }`}
             >
               <div className="flex items-center gap-2.5">
@@ -947,7 +947,7 @@ function AdminDashboard() {
                   { label: "Clientes Cadastrados", value: stats.registeredClients, icon: Users, trend: "Total histórico", color: "text-purple-400" },
                   { label: "Serviços Realizados", value: stats.completedServices, icon: CalendarCheck, trend: "Finalizados", color: "text-pink-400" },
                 ].map((kpi) => (
-                  <div key={kpi.label} className="glass-card rounded-2xl p-5 hover:scale-[1.02] hover:glow-gold-sm transition-all duration-300 flex flex-col justify-between">
+                  <div key={kpi.label} className="glass-card rounded-2xl p-5 hover:scale-[1.02] hover:glow-emerald-sm transition-all duration-300 flex flex-col justify-between">
                     <div className="flex justify-between items-start">
                       <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">{kpi.label}</span>
                       <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
@@ -990,7 +990,7 @@ function AdminDashboard() {
                   </div>
 
                   {/* Barber Performance Chart */}
-                  <div className="glass-card rounded-2xl p-5 min-w-0 overflow-hidden hover:glow-gold-sm transition-all duration-300">
+                  <div className="glass-card rounded-2xl p-5 min-w-0 overflow-hidden hover:glow-emerald-sm transition-all duration-300">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-4">Desempenho por Especialista (Faturamento)</h3>
                     <div className="h-64 min-w-0 overflow-hidden">
                       <ResponsiveContainer width="100%" height="100%">
@@ -1063,7 +1063,7 @@ function AdminDashboard() {
                       key={f.id}
                       onClick={() => setAgendaFilter(f.id)}
                       className={`rounded px-2.5 py-1.5 text-[10px] font-black transition-all ${
-                        agendaFilter === f.id ? "bg-gold-gradient text-zinc-950 font-bold shadow-md glow-gold-sm" : "text-zinc-400 hover:text-white"
+                        agendaFilter === f.id ? "bg-emerald-gradient text-zinc-950 font-bold shadow-md glow-emerald-sm" : "text-zinc-400 hover:text-white"
                       }`}
                     >
                       {f.label}
@@ -1208,45 +1208,46 @@ function AdminDashboard() {
               {showClientForm && (
                 <form
                   onSubmit={handleClientSubmit}
-                  className="glass-card rounded-2xl p-5 space-y-4 animate-in fade-in slide-in-from-top-3 duration-200"
+                  className="glass-card border border-amber-500/20 shadow-lg shadow-amber-500/5 rounded-2xl p-5 space-y-4 animate-in fade-in slide-in-from-top-3 duration-200"
                 >
-                  <h3 className="text-xs font-black uppercase tracking-wider text-amber-500">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                    <Users className="h-4 w-4" />
                     {editingClient ? "Editar Cliente" : "Cadastrar Novo Cliente"}
                   </h3>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Nome do Cliente</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Nome do Cliente</label>
                       <input
                         type="text"
                         required
                         value={clientName}
                         onChange={(e) => setClientName(e.target.value)}
                         placeholder="Ex: João da Silva"
-                        className="w-full rounded-xl bg-zinc-800 mt-1.5 px-4 py-3 text-xs text-white placeholder:text-zinc-400 border border-zinc-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                        className="w-full rounded-xl bg-zinc-950 mt-1.5 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-600 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.15)] focus:ring-amber-400 focus:outline-none transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Celular (WhatsApp - com DDD)</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Celular (WhatsApp - com DDD)</label>
                       <input
                         type="text"
                         required
                         value={clientPhone}
                         onChange={(e) => setClientPhone(e.target.value)}
                         placeholder="Ex: (62) 99329-9120"
-                        className="w-full rounded-xl bg-zinc-800 mt-1.5 px-4 py-3 text-xs text-white placeholder:text-zinc-400 border border-zinc-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                        className="w-full rounded-xl bg-zinc-950 mt-1.5 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-600 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.15)] focus:ring-amber-400 focus:outline-none transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">E-mail (Opcional)</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">E-mail (Opcional)</label>
                       <input
                         type="email"
                         value={clientEmail}
                         onChange={(e) => setClientEmail(e.target.value)}
                         placeholder="Ex: joao@gmail.com"
-                        className="w-full rounded-xl bg-zinc-800 mt-1.5 px-4 py-3 text-xs text-white placeholder:text-zinc-400 border border-zinc-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                        className="w-full rounded-xl bg-zinc-950 mt-1.5 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-600 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.15)] focus:ring-amber-400 focus:outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -1261,13 +1262,13 @@ function AdminDashboard() {
                         setClientPhone("");
                         setClientEmail("");
                       }}
-                      className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2.5 text-xs font-bold text-zinc-400 hover:text-white transition-colors"
+                      className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2.5 text-xs font-bold text-zinc-400 hover:text-white transition-colors cursor-pointer"
                     >
                       Cancelar
                     </button>
                     <button
                       type="submit"
-                      className="rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 px-6 py-2.5 text-xs font-bold transition-all shadow"
+                      className="rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 px-6 py-2.5 text-xs font-black transition-all shadow shadow-amber-500/10 cursor-pointer active:scale-95"
                     >
                       {editingClient ? "Salvar Alterações" : "Adicionar Cliente"}
                     </button>
@@ -1312,7 +1313,9 @@ function AdminDashboard() {
                           <td className="p-4 text-right">
                             <div className="flex items-center justify-end gap-2">
                               <a
-                                href={`https://wa.me/55${client.phone}?text=Ol%C3%A1%20${encodeURIComponent(client.name)}!%20Tudo%20bem%3F%20Entramos%20em%20contato%20pela%20Cl%C3%ADnica.`}
+                                href={`https://wa.me/55${client.phone}?text=${encodeURIComponent(
+                                  `Olá ${client.name}! Tudo bem? Entramos em contato pela Clínica${shopName ? ` *${shopName.toUpperCase()}*` : ""}.`
+                                )}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-1.5 rounded-lg border border-green-500/30 bg-zinc-950 px-2.5 py-1.5 text-[10px] font-bold text-green-500 hover:text-green-400 hover:border-green-500/50 transition-all cursor-pointer"
@@ -1379,47 +1382,48 @@ function AdminDashboard() {
               {showServiceForm && (
                 <form
                   onSubmit={handleServiceSubmit}
-                  className="glass-card rounded-2xl p-5 space-y-4 animate-in fade-in slide-in-from-top-3 duration-200"
+                  className="glass-card border border-amber-500/20 shadow-lg shadow-amber-500/5 rounded-2xl p-5 space-y-4 animate-in fade-in slide-in-from-top-3 duration-200"
                 >
-                  <h3 className="text-xs font-black uppercase tracking-wider text-amber-500">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                    <Layers className="h-4 w-4" />
                     {editingService ? "Editar Serviço" : "Cadastrar Novo Serviço"}
                   </h3>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Nome do Serviço</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Nome do Serviço</label>
                       <input
                         type="text"
                         required
                         value={serviceName}
                         onChange={(e) => setServiceName(e.target.value)}
-                        placeholder="Ex: Corte Degradê"
-                        className="w-full rounded-xl bg-zinc-800 mt-1.5 px-4 py-3 text-xs text-white placeholder:text-zinc-400 border border-zinc-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                        placeholder="Ex: Limpeza de Pele"
+                        className="w-full rounded-xl bg-zinc-950 mt-1.5 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-600 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.15)] focus:ring-amber-400 focus:outline-none transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Valor (R$)</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Valor (R$)</label>
                       <input
                         type="number"
                         required
                         step="0.01"
                         value={servicePrice}
                         onChange={(e) => setServicePrice(e.target.value)}
-                        placeholder="Ex: 45.00"
-                        className="w-full rounded-xl bg-zinc-800 mt-1.5 px-4 py-3 text-xs text-white placeholder:text-zinc-400 border border-zinc-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                        placeholder="Ex: 120.00"
+                        className="w-full rounded-xl bg-zinc-950 mt-1.5 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-600 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.15)] focus:ring-amber-400 focus:outline-none transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Duração (Minutos)</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Duração (Minutos)</label>
                       <input
                         type="number"
                         required
                         value={serviceDuration}
                         onChange={(e) => setServiceDuration(e.target.value)}
                         placeholder="Ex: 30"
-                        className="w-full rounded-xl bg-zinc-800 mt-1.5 px-4 py-3 text-xs text-white placeholder:text-zinc-400 border border-zinc-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                        className="w-full rounded-xl bg-zinc-950 mt-1.5 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-600 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.15)] focus:ring-amber-400 focus:outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -1431,13 +1435,13 @@ function AdminDashboard() {
                         setShowServiceForm(false);
                         setEditingService(null);
                       }}
-                      className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2.5 text-xs font-bold text-zinc-400 hover:text-white transition-colors"
+                      className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2.5 text-xs font-bold text-zinc-400 hover:text-white transition-colors cursor-pointer"
                     >
                       Cancelar
                     </button>
                     <button
                       type="submit"
-                      className="rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 px-6 py-2.5 text-xs font-bold transition-all shadow"
+                      className="rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 px-6 py-2.5 text-xs font-black transition-all shadow shadow-amber-500/10 cursor-pointer active:scale-95"
                     >
                       {editingService ? "Salvar Alterações" : "Adicionar Serviço"}
                     </button>
@@ -1534,44 +1538,45 @@ function AdminDashboard() {
               {showBarberForm && (
                 <form
                   onSubmit={handleBarberSubmit}
-                  className="glass-card rounded-2xl p-5 space-y-4 animate-in fade-in slide-in-from-top-3 duration-200"
+                  className="glass-card border border-amber-500/20 shadow-lg shadow-amber-500/5 rounded-2xl p-5 space-y-4 animate-in fade-in slide-in-from-top-3 duration-200"
                 >
-                  <h3 className="text-xs font-black uppercase tracking-wider text-amber-500">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                    <Users className="h-4 w-4" />
                     {editingBarber ? "Editar Especialista" : "Cadastrar Novo Especialista"}
                   </h3>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Nome do Especialista</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Nome do Especialista</label>
                       <input
                         type="text"
                         required
                         value={barberName}
                         onChange={(e) => setBarberName(e.target.value)}
                         placeholder="Ex: Rafael Silva"
-                        className="w-full rounded-xl bg-zinc-800 mt-1.5 px-4 py-3 text-xs text-white placeholder:text-zinc-400 border border-zinc-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                        className="w-full rounded-xl bg-zinc-950 mt-1.5 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-650 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.25)] focus:ring-amber-400 focus:outline-none transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Celular (WhatsApp - com DDD)</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Celular (WhatsApp - com DDD)</label>
                       <input
                         type="text"
                         value={barberPhone}
                         onChange={(e) => setBarberPhone(e.target.value)}
                         placeholder="Ex: (62) 99329-9120"
-                        className="w-full rounded-xl bg-zinc-800 mt-1.5 px-4 py-3 text-xs text-white placeholder:text-zinc-400 border border-zinc-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                        className="w-full rounded-xl bg-zinc-950 mt-1.5 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-655 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.25)] focus:ring-amber-400 focus:outline-none transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Foto (URL da Imagem - Opcional)</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Foto (URL da Imagem - Opcional)</label>
                       <input
                         type="url"
                         value={barberAvatar}
                         onChange={(e) => setBarberAvatar(e.target.value)}
                         placeholder="Deixe em branco para usar foto padrão"
-                        className="w-full rounded-xl bg-zinc-800 mt-1.5 px-4 py-3 text-xs text-white placeholder:text-zinc-400 border border-zinc-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                        className="w-full rounded-xl bg-zinc-950 mt-1.5 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-655 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.25)] focus:ring-amber-400 focus:outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -1579,7 +1584,7 @@ function AdminDashboard() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
                     {/* Dias de Atendimento */}
                     <div className="md:col-span-2">
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200 block mb-2">Dias de Atendimento</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400 block mb-2">Dias de Atendimento</label>
                       <div className="flex flex-wrap gap-2">
                         {weekdaysList.map((day) => {
                           const isChecked = barberWorkDays.includes(day.value);
@@ -1596,10 +1601,10 @@ function AdminDashboard() {
                                   setBarberWorkDays([...barberWorkDays, day.value].sort());
                                 }
                               }}
-                              className={`px-3 py-2 text-xs font-bold rounded-xl border transition-all ${
+                              className={`px-3 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                                 isChecked
                                   ? "bg-amber-500 text-zinc-950 border-amber-500 shadow-md shadow-amber-500/10"
-                                  : "bg-zinc-800 text-zinc-300 border-zinc-700 hover:text-white hover:bg-zinc-700"
+                                  : "bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white hover:bg-zinc-900/60"
                               }`}
                             >
                               {day.label}
@@ -1611,7 +1616,7 @@ function AdminDashboard() {
 
                     {/* Horários de Início e Fim */}
                     <div>
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200 block mb-1.5">Horário do Turno</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400 block mb-1.5">Horário do Turno</label>
                       <div className="flex items-center gap-2">
                         <select
                           value={barberStartTime}
@@ -1621,11 +1626,11 @@ function AdminDashboard() {
                             const updated = DEFAULT_WORK_HOURS.filter(h => h >= newStart && h <= barberEndTime);
                             setBarberWorkHours(updated);
                           }}
-                          className="flex-1 rounded-xl bg-zinc-800 px-3 py-2.5 text-xs text-white ring-1 ring-zinc-600 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="flex-1 rounded-xl bg-zinc-950 px-3 py-2.5 text-xs text-white ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.15)] focus:ring-2 focus:ring-amber-400 focus:outline-none"
                         >
                           {hourOptions.map(h => <option key={h} value={h}>{h}</option>)}
                         </select>
-                        <span className="text-xs text-zinc-400 font-extrabold">até</span>
+                        <span className="text-xs text-zinc-600 font-bold">até</span>
                         <select
                           value={barberEndTime}
                           onChange={(e) => {
@@ -1634,7 +1639,7 @@ function AdminDashboard() {
                             const updated = DEFAULT_WORK_HOURS.filter(h => h >= barberStartTime && h <= newEnd);
                             setBarberWorkHours(updated);
                           }}
-                          className="flex-1 rounded-xl bg-zinc-800 px-3 py-2.5 text-xs text-white ring-1 ring-zinc-600 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="flex-1 rounded-xl bg-zinc-950 px-3 py-2.5 text-xs text-white ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.15)] focus:ring-2 focus:ring-amber-400 focus:outline-none"
                         >
                           {hourOptions.map(h => <option key={h} value={h}>{h}</option>)}
                         </select>
@@ -1644,7 +1649,7 @@ function AdminDashboard() {
 
                   {/* Horários Individuais Editáveis */}
                   <div className="pt-2">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200 block mb-2">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400 block mb-2">
                       Horários de Atendimento Individuais (Selecione para Ativar/Desativar)
                     </label>
                     <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
@@ -1656,15 +1661,15 @@ function AdminDashboard() {
                             type="button"
                             onClick={() => {
                               if (isChecked) {
-                                  setBarberWorkHours(barberWorkHours.filter((h) => h !== hour));
+                                setBarberWorkHours(barberWorkHours.filter((h) => h !== hour));
                               } else {
                                 setBarberWorkHours([...barberWorkHours, hour].sort());
                               }
                             }}
-                            className={`px-2 py-1.5 text-center text-xs font-bold rounded-xl border transition-all ${
+                            className={`px-2 py-1.5 text-center text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                               isChecked
                                 ? "bg-amber-500 text-zinc-950 border-amber-500 shadow-md shadow-amber-500/10"
-                                : "bg-zinc-800 text-zinc-300 border-zinc-700 hover:text-white hover:bg-zinc-700"
+                                : "bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white hover:bg-zinc-900/60"
                             }`}
                           >
                             {hour}
@@ -1675,13 +1680,13 @@ function AdminDashboard() {
                   </div>
 
                   <div className="pt-2">
-                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200 block">Datas de Folga Específicas / Bloqueios (Formato: AAAA-MM-DD, separados por vírgula)</label>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400 block">Datas de Folga Específicas / Bloqueios (Formato: AAAA-MM-DD, separados por vírgula)</label>
                     <input
                       type="text"
                       value={barberBlockedDates}
                       onChange={(e) => setBarberBlockedDates(e.target.value)}
                       placeholder="Ex: 2026-06-12, 2026-06-25 (deixe em branco se nenhuma)"
-                      className="w-full rounded-xl bg-zinc-800 mt-1.5 px-4 py-3 text-xs text-white placeholder:text-zinc-400 border border-zinc-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all"
+                      className="w-full rounded-xl bg-zinc-950 mt-1.5 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-655 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.25)] focus:ring-amber-400 focus:outline-none transition-all"
                     />
                   </div>
 
@@ -1700,13 +1705,13 @@ function AdminDashboard() {
                         setBarberWorkHours(DEFAULT_WORK_HOURS);
                         setBarberBlockedDates("");
                       }}
-                      className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2.5 text-xs font-bold text-zinc-400 hover:text-white transition-colors"
+                      className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2.5 text-xs font-bold text-zinc-400 hover:text-white transition-colors cursor-pointer"
                     >
                       Cancelar
                     </button>
                     <button
                       type="submit"
-                      className="rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 px-6 py-2.5 text-xs font-bold transition-all shadow"
+                      className="rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 px-6 py-2.5 text-xs font-black transition-all shadow shadow-amber-500/10 cursor-pointer active:scale-95"
                     >
                       {editingBarber ? "Salvar Alterações" : "Adicionar Especialista"}
                     </button>
@@ -1799,7 +1804,7 @@ function AdminDashboard() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Form Column */}
-                <div className="md:col-span-2 glass-card rounded-3xl p-6 space-y-4">
+                <div className="md:col-span-2 glass-card border border-amber-500/20 shadow-lg shadow-amber-500/5 rounded-3xl p-6 space-y-4">
                   <form
                     onSubmit={async (e) => {
                       e.preventDefault();
@@ -1829,25 +1834,25 @@ function AdminDashboard() {
                     className="space-y-4"
                   >
                     <div>
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Nome da Clínica</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Nome da Clínica</label>
                       <input
                         type="text"
                         required
                         value={shopName}
                         onChange={(e) => setShopName(e.target.value)}
                         placeholder="Ex: DoctorCorpo Clínica"
-                        className="w-full rounded-xl bg-zinc-800/90 px-4 py-3.5 text-sm text-white placeholder:text-zinc-400 border border-zinc-600 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition-all mt-1.5"
+                        className="w-full rounded-xl bg-zinc-950/90 px-4 py-3.5 text-sm text-amber-300 placeholder:text-zinc-655 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.25)] focus:ring-amber-400 focus:outline-none transition-all mt-1.5"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Link do Logotipo / Imagem (URL)</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Link do Logotipo / Imagem (URL)</label>
                       <input
                         type="url"
                         value={shopLogoUrl}
                         onChange={(e) => setShopLogoUrl(e.target.value)}
                         placeholder="Ex: https://link-da-imagem.com/logo.png"
-                        className="w-full rounded-xl bg-zinc-800/90 px-4 py-3.5 text-sm text-white placeholder:text-zinc-400 border border-zinc-600 focus:border-amber-500 focus:outline-none transition-all mt-1.5"
+                        className="w-full rounded-xl bg-zinc-950/90 px-4 py-3.5 text-sm text-amber-300 placeholder:text-zinc-655 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.25)] focus:ring-amber-400 focus:outline-none transition-all mt-1.5"
                       />
                       <p className="text-[10px] text-zinc-450 mt-1.5 leading-relaxed font-semibold">
                         Copie e cole o endereço/link de uma foto pública (do Instagram, Facebook, Imgur, Postimages, etc.). Se não colocar nenhuma imagem, será usada a logo temática padrão de Goiás.
@@ -1857,7 +1862,7 @@ function AdminDashboard() {
                     <button
                       type="submit"
                       disabled={savingProfile}
-                      className="w-full rounded-xl bg-amber-500 py-3.5 text-xs font-bold tracking-wide text-zinc-950 hover:bg-amber-400 active:scale-95 transition-all shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 mt-2"
+                      className="w-full rounded-xl bg-amber-500 py-3.5 text-xs font-black tracking-wide text-zinc-950 hover:bg-amber-400 active:scale-95 transition-all shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 mt-2 cursor-pointer"
                     >
                       {savingProfile ? (
                         <>
@@ -1948,6 +1953,7 @@ function AdminDashboard() {
               selectedPlan={selectedPlan}
               setSelectedPlan={setSelectedPlan}
               handleCopyPixKey={handleCopyPixKey}
+              shopName={shopName}
             />
           </div>
         </div>
@@ -1960,23 +1966,26 @@ function AdminDashboard() {
 function SubscriptionSection({
   selectedPlan,
   setSelectedPlan,
-  handleCopyPixKey
+  handleCopyPixKey,
+  shopName
 }: {
   selectedPlan: "mensal" | "trimestral" | "semestral" | "anual";
   setSelectedPlan: (plan: "mensal" | "trimestral" | "semestral" | "anual") => void;
   handleCopyPixKey: () => void;
+  shopName: string;
 }) {
   const plans = [
-    { id: "mensal" as const, name: "Mensal", price: "R$ 99,90", rawPrice: 99.90, desc: "Acesso por 30 dias", detail: "R$ 99,90 / mês" },
-    { id: "trimestral" as const, name: "Trimestral", price: "R$ 249,90", rawPrice: 249.90, desc: "Acesso por 90 dias", detail: "R$ 83,30 / mês", popular: true },
-    { id: "semestral" as const, name: "Semestral", price: "R$ 449,90", rawPrice: 449.90, desc: "Acesso por 180 dias", detail: "R$ 74,98 / mês" },
-    { id: "anual" as const, name: "Anual", price: "R$ 799,90", rawPrice: 799.90, desc: "Acesso por 365 dias", detail: "R$ 66,65 / mês", bestDeal: true },
+    { id: "mensal" as const, name: "Mensal", price: "R$ 49,90", rawPrice: 49.90, desc: "Acesso por 30 dias", detail: "R$ 49,90 / mês" },
+    { id: "trimestral" as const, name: "Trimestral", price: "R$ 124,90", rawPrice: 124.90, desc: "Acesso por 90 dias", detail: "R$ 41,63 / mês", popular: true },
+    { id: "semestral" as const, name: "Semestral", price: "R$ 224,90", rawPrice: 224.90, desc: "Acesso por 180 dias", detail: "R$ 37,48 / mês" },
+    { id: "anual" as const, name: "Anual", price: "R$ 399,90", rawPrice: 399.90, desc: "Acesso por 365 dias", detail: "R$ 33,32 / mês", bestDeal: true },
   ];
 
   const currentPlan = plans.find(p => p.id === selectedPlan)!;
 
   const getWhatsAppLink = () => {
-    const message = `Olá Gleidmir! Realizei o pagamento do plano *${currentPlan.name}* (R$ ${currentPlan.price}) para minha clínica. Aqui está o comprovante!`;
+    const clinicaName = shopName ? ` para a minha Clínica *${shopName.toUpperCase()}*` : "";
+    const message = `Olá Gleidmir! Gostaria de adquirir o plano *${currentPlan.name.toUpperCase()}*${clinicaName}, no aplicativo *DoctorCorpo GO*.`;
     return `https://wa.me/5562993299120?text=${encodeURIComponent(message)}`;
   };
 

@@ -470,10 +470,10 @@ export function LandingPage() {
             {/* Pricing Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { name: "Mensal", price: "R$ 99,90", rawPrice: 99.90, desc: "Acesso total por 30 dias", detail: "R$ 99,90 / mês" },
-                { name: "Trimestral", price: "R$ 249,90", rawPrice: 249.90, desc: "Acesso total por 90 dias", detail: "R$ 83,30 / mês", popular: true },
-                { name: "Semestral", price: "R$ 449,90", rawPrice: 449.90, desc: "Acesso total por 180 dias", detail: "R$ 74,98 / mês" },
-                { name: "Anual", price: "R$ 799,90", rawPrice: 799.90, desc: "Acesso total por 365 dias", detail: "R$ 66,65 / mês", bestDeal: true },
+                { name: "Mensal", price: "R$ 49,90", rawPrice: 49.90, desc: "Acesso total por 30 dias", detail: "R$ 49,90 / mês" },
+                { name: "Trimestral", price: "R$ 124,90", rawPrice: 124.90, desc: "Acesso total por 90 dias", detail: "R$ 41,63 / mês", popular: true },
+                { name: "Semestral", price: "R$ 224,90", rawPrice: 224.90, desc: "Acesso total por 180 dias", detail: "R$ 37,48 / mês" },
+                { name: "Anual", price: "R$ 399,90", rawPrice: 399.90, desc: "Acesso total por 365 dias", detail: "R$ 33,32 / mês", bestDeal: true },
               ].map((p) => (
                 <div
                   key={p.name}
@@ -507,7 +507,7 @@ export function LandingPage() {
                       A ativação do plano é realizada enviando o comprovante via WhatsApp.
                     </p>
                     <a
-                      href={`https://wa.me/5562993299120?text=${encodeURIComponent(`Olá Gleidmir! Gostaria de adquirir o plano *${p.name}* (R$ ${p.price}) para minha clínica.`)}`}
+                      href={`https://wa.me/5562993299120?text=${encodeURIComponent(`Olá Gleidmir! Gostaria de adquirir o plano *${p.name.toUpperCase()}* para a minha Clínica *CLINICA CRISTINO'S*, no aplicativo *DoctorCorpo GO*.`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`w-full inline-flex items-center justify-center gap-1.5 rounded-xl py-3 text-xs font-bold transition-all cursor-pointer text-center ${

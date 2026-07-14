@@ -194,9 +194,7 @@ function LoginPage() {
 
       {/* Main card */}
       <main className="flex-1 flex items-center justify-center px-4 py-8">
-        <div className={`w-full max-w-md glass-card rounded-3xl p-8 shadow-2xl transition-all duration-500 ${
-          activeTab === "client" ? "glow-emerald" : "glow-gold"
-        }`}>
+        <div className="w-full max-w-md glass-card rounded-3xl p-8 shadow-2xl transition-all duration-500 glow-emerald">
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
             {shopProfile?.logoUrl ? (
@@ -220,11 +218,26 @@ function LoginPage() {
             </p>
           </div>
 
+          {/* Role selection tab */}
+          {activeTab === "admin" ? (
+            <div className="flex justify-center mb-6">
+              <span className="rounded-xl bg-amber-500 text-zinc-950 px-8 py-2.5 text-xs font-black uppercase shadow-md glow-emerald-sm tracking-wider select-none">
+                PROFISSIONAL / ADM
+              </span>
+            </div>
+          ) : (
+            <div className="flex justify-center mb-6">
+              <span className="rounded-xl bg-amber-500 text-zinc-950 px-8 py-2.5 text-xs font-black uppercase shadow-md glow-emerald-sm tracking-wider select-none">
+                CLIENTE
+              </span>
+            </div>
+          )}
+
           {activeTab === "client" ? (
             /* CLIENT FORM */
             <form onSubmit={handleClientSubmit} className="space-y-4">
               <div>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Seu Nome</label>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-amber-400">Seu Nome</label>
                 <div className="relative mt-1.5">
                   <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                   <input
@@ -233,13 +246,13 @@ function LoginPage() {
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
                     placeholder="Ex: João da Silva"
-                    className="w-full rounded-xl bg-zinc-800 pl-11 pr-4 py-3.5 text-sm text-white placeholder:text-zinc-400 border border-zinc-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"
+                    className="w-full rounded-xl bg-zinc-950/90 pl-11 pr-4 py-3.5 text-sm text-amber-300 placeholder:text-zinc-600 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.25)] focus:ring-amber-400 focus:outline-none transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Celular (WhatsApp)</label>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-amber-400">Celular (WhatsApp)</label>
                 <div className="relative mt-1.5">
                   <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                   <input
@@ -248,7 +261,7 @@ function LoginPage() {
                     value={clientPhone}
                     onChange={(e) => setClientPhone(e.target.value.replace(/\D/g, ""))}
                     placeholder="Ex: 62999998888"
-                    className="w-full rounded-xl bg-zinc-800 pl-11 pr-4 py-3.5 text-sm text-white placeholder:text-zinc-400 border border-zinc-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"
+                    className="w-full rounded-xl bg-zinc-950/90 pl-11 pr-4 py-3.5 text-sm text-amber-300 placeholder:text-zinc-650 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.25)] focus:ring-amber-400 focus:outline-none transition-all"
                   />
                 </div>
                 <p className="text-[10px] text-zinc-400 mt-1 font-semibold">Apenas números com DDD</p>
@@ -257,16 +270,16 @@ function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-xl bg-amber-500 py-3.5 text-sm font-bold tracking-wide text-zinc-950 hover:bg-amber-400 active:scale-95 transition-all shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 mt-2"
+                className="w-full rounded-xl bg-amber-500 py-3.5 text-sm font-black tracking-wide text-zinc-950 hover:bg-amber-400 active:scale-95 transition-all shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 mt-2 cursor-pointer"
               >
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "AGENDAR MINHA CONSULTA →"}
+                {loading ? <Loader2 className="h-4 w-4 animate-spin text-zinc-950" /> : "AGENDAR MEU HORÁRIO →"}
               </button>
             </form>
           ) : (
             /* ADMIN FORM */
             <form onSubmit={handleAdminSubmit} className="space-y-4">
               <div>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">E-mail Administrativo</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">E-mail Administrativo</label>
                 <div className="relative mt-1.5">
                   <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                   <input
@@ -275,13 +288,13 @@ function LoginPage() {
                     value={adminEmail}
                     onChange={(e) => setAdminEmail(e.target.value)}
                     placeholder="admin@doctorcorpo.com"
-                    className="w-full rounded-xl bg-zinc-800 pl-11 pr-4 py-3.5 text-sm text-white placeholder:text-zinc-400 border border-zinc-600 focus:ring-2 focus:ring-[#fbbf24] focus:outline-none transition-all"
+                    className="w-full rounded-xl bg-zinc-950/90 pl-11 pr-4 py-3.5 text-sm text-amber-300 placeholder:text-zinc-600 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.25)] focus:ring-amber-400 focus:outline-none transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-200">Senha</label>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-amber-400">Senha</label>
                 <div className="relative mt-1.5">
                   <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                   <input
@@ -290,7 +303,7 @@ function LoginPage() {
                     value={adminPassword}
                     onChange={(e) => setAdminPassword(e.target.value)}
                     placeholder="••••••"
-                    className="w-full rounded-xl bg-zinc-800 pl-11 pr-4 py-3.5 text-sm text-white placeholder:text-zinc-400 border border-zinc-600 focus:ring-2 focus:ring-[#fbbf24] focus:outline-none transition-all"
+                    className="w-full rounded-xl bg-zinc-950/90 pl-11 pr-4 py-3.5 text-sm text-amber-300 placeholder:text-zinc-650 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.25)] focus:ring-amber-400 focus:outline-none transition-all"
                   />
                 </div>
               </div>
@@ -298,7 +311,7 @@ function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-xl bg-gold-gradient py-3.5 text-sm font-bold tracking-wide hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 mt-2"
+                className="w-full rounded-xl bg-amber-500 py-3.5 text-sm font-black tracking-wide text-zinc-950 hover:bg-amber-400 active:scale-95 transition-all shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 mt-2 cursor-pointer"
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin text-zinc-950" /> : "ENTRAR NO PAINEL →"}
               </button>

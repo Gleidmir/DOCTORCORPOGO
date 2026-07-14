@@ -60,18 +60,41 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Map Amber to Light Teal/Turquoise shades */
-  --color-amber-50: oklch(0.97 0.04 185);
-  --color-amber-100: oklch(0.94 0.08 185);
-  --color-amber-200: oklch(0.90 0.12 185);
-  --color-amber-300: oklch(0.85 0.15 185);
-  --color-amber-400: oklch(0.80 0.18 185);
-  --color-amber-500: oklch(0.75 0.20 185); /* Main light teal accent */
-  --color-amber-600: oklch(0.68 0.22 185);
-  --color-amber-700: oklch(0.58 0.20 185);
-  --color-amber-800: oklch(0.48 0.18 185);
-  --color-amber-900: oklch(0.38 0.14 185);
-  --color-amber-950: oklch(0.24 0.09 185);
+  /* Map Amber to Vibrant Vivid Cyan/Teal (Electric Marine) */
+  --color-amber-50: oklch(0.98 0.05 195);
+  --color-amber-100: oklch(0.96 0.09 195);
+  --color-amber-200: oklch(0.92 0.14 195);
+  --color-amber-300: oklch(0.88 0.19 195);
+  --color-amber-400: oklch(0.84 0.23 195);
+  --color-amber-500: oklch(0.78 0.26 195); /* Extremely bright electric marine teal accent */
+  --color-amber-600: oklch(0.70 0.24 195);
+  --color-amber-700: oklch(0.60 0.22 195);
+  --color-amber-800: oklch(0.50 0.19 195);
+  --color-amber-900: oklch(0.40 0.15 195);
+  --color-amber-950: oklch(0.24 0.10 195);
+
+  /* Vivid Cheerful Emerald & Green (Vibrant Neon Lime/Teal Green) */
+  --color-green-400: oklch(0.84 0.22 145);
+  --color-green-500: oklch(0.78 0.24 145);
+  --color-green-600: oklch(0.68 0.22 145);
+  
+  --color-emerald-400: oklch(0.84 0.22 145);
+  --color-emerald-500: oklch(0.78 0.24 145);
+  --color-emerald-600: oklch(0.68 0.22 145);
+
+  /* Vivid Cheerful Red & Destructive (Vibrant Electric Cherry/Coral Red) */
+  --color-red-400: oklch(0.75 0.23 27);
+  --color-red-500: oklch(0.68 0.26 27);
+  --color-red-600: oklch(0.58 0.23 27);
+  
+  --color-destructive-400: oklch(0.75 0.23 27);
+  --color-destructive-500: oklch(0.68 0.26 27);
+  --color-destructive-600: oklch(0.58 0.23 27);
+
+  /* Vivid Cheerful Yellow (Vibrant Lemon Gold/Yellow) */
+  --color-yellow-400: oklch(0.90 0.22 85);
+  --color-yellow-500: oklch(0.86 0.24 85);
+  --color-yellow-600: oklch(0.76 0.20 85);
 
   /* Map Zinc to Sleek Dark-Platinum shades */
   --color-zinc-50: oklch(0.96 0.003 240);
@@ -95,7 +118,7 @@
   --card-foreground: oklch(0.11 0.003 240);
   --popover: oklch(0.98 0.003 240);
   --popover-foreground: oklch(0.11 0.003 240);
-  --primary: oklch(0.55 0.18 185);
+  --primary: oklch(0.78 0.26 195);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.90 0.008 240);
   --secondary-foreground: oklch(0.11 0.003 240);
@@ -103,11 +126,11 @@
   --muted-foreground: oklch(0.48 0.01 240);
   --accent: oklch(0.90 0.008 240);
   --accent-foreground: oklch(0.11 0.003 240);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(0.68 0.26 27);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   --border: oklch(0.85 0.008 240);
   --input: oklch(0.85 0.008 240);
-  --ring: oklch(0.55 0.18 185);
+  --ring: oklch(0.78 0.26 195);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -115,12 +138,12 @@
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.98 0.003 240);
   --sidebar-foreground: oklch(0.11 0.003 240);
-  --sidebar-primary: oklch(0.55 0.18 185);
+  --sidebar-primary: oklch(0.78 0.26 195);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.90 0.008 240);
   --sidebar-accent-foreground: oklch(0.11 0.003 240);
   --sidebar-border: oklch(0.85 0.008 240);
-  --sidebar-ring: oklch(0.55 0.18 185);
+  --sidebar-ring: oklch(0.78 0.26 195);
 }
 
 .dark {
@@ -130,7 +153,7 @@
   --card-foreground: oklch(0.92 0.005 240);
   --popover: oklch(0.16 0.004 240);
   --popover-foreground: oklch(0.92 0.005 240);
-  --primary: oklch(0.75 0.20 185);
+  --primary: oklch(0.78 0.26 195);
   --primary-foreground: oklch(0.11 0.003 240);
   --secondary: oklch(0.22 0.006 240);
   --secondary-foreground: oklch(0.92 0.005 240);
@@ -189,24 +212,24 @@
   background: rgba(12, 12, 14, 0.72) !important;
   backdrop-filter: blur(20px) saturate(140%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.055) !important;
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid rgba(20, 184, 166, 0.15) !important;
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6), 0 0 15px rgba(20, 184, 166, 0.08) !important;
 }
 
 .glow-emerald {
-  box-shadow: 0 0 20px rgba(20, 184, 166, 0.18) !important;
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.25) !important;
 }
 
 .glow-gold {
-  box-shadow: 0 0 20px rgba(251, 191, 36, 0.18) !important;
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.25) !important;
 }
 
 .glow-emerald-sm {
-  box-shadow: 0 0 12px rgba(20, 184, 166, 0.1) !important;
+  box-shadow: 0 0 12px rgba(20, 184, 166, 0.15) !important;
 }
 
 .glow-gold-sm {
-  box-shadow: 0 0 12px rgba(251, 191, 36, 0.1) !important;
+  box-shadow: 0 0 12px rgba(20, 184, 166, 0.15) !important;
 }
 
 .text-gold-gradient {
@@ -216,12 +239,12 @@
 }
 
 .bg-gold-gradient {
-  background: linear-gradient(135deg, #b45309 0%, #d97706 45%, #fbbf24 100%) !important;
+  background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%) !important;
   color: #0c0c0e !important;
 }
 
 .bg-emerald-gradient {
-  background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%) !important;
+  background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%) !important;
   color: #0c0c0e !important;
 }
 
