@@ -1169,14 +1169,24 @@ function MyAppointments({ clientPhone, shopProfile }: MyAppointmentsProps) {
     if (confirm("Deseja realmente limpar todo o histórico de agendamentos?")) {
       setLoading(true);
       try {
+        // Obter os IDs de todos os agendamentos realizados (completados) para ocultar localmente
+        const completedIds = apts
+          .filter((a) => a.status === "completed")
+          .map((a) => a.id);
+
+        const key = `mbg_dismissed_apts_${clientPhone}`;
+        const dismissedStr = window.localStorage.getItem(key);
+        const dismissedIds = dismissedStr ? JSON.parse(dismissedStr) : [];
+        const updatedDismissed = Array.from(new Set([...dismissedIds, ...completedIds]));
+        window.localStorage.setItem(key, JSON.stringify(updatedDismissed));
+
+        // Deleta apenas os agendamentos pendentes ou cancelados do banco
         await deleteClientAppointments(clientPhone);
         
-        // Also clean up local dismissed state since it is deleted from DB
-        window.localStorage.removeItem(`mbg_dismissed_apts_${clientPhone}`);
         await loadAppointments();
       } catch (e) {
         console.error("Erro ao limpar histórico no banco, aplicando limpeza local...", e);
-        // Fallback: save all current apt IDs as dismissed locally
+        // Fallback: salvar todos os IDs atuais como descartados localmente
         const currentIds = apts.map((a) => a.id);
         const key = `mbg_dismissed_apts_${clientPhone}`;
         const dismissedStr = window.localStorage.getItem(key);
