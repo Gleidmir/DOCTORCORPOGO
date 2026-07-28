@@ -2038,21 +2038,9 @@ function SubscriptionSection({
           PAGAMENTO DO PLANO {currentPlan.name.toUpperCase()}
         </h3>
 
-        <div className="flex flex-col md:flex-row gap-6 items-center">
-          {/* QR Code Container */}
-          <div className="flex flex-col items-center bg-white p-4 rounded-2xl shrink-0 border border-zinc-800 max-w-[200px]">
-            <img
-              src="/pix_qr.jpg"
-              alt="QR Code Pix"
-              className="w-40 h-40 object-contain rounded-lg"
-            />
-            <span className="text-[10px] text-zinc-500 font-bold mt-2 uppercase tracking-wide">
-              Neon Pagamentos
-            </span>
-          </div>
-
+        <div className="flex flex-col gap-6">
           {/* Key and Info Container */}
-          <div className="flex-1 w-full space-y-4">
+          <div className="w-full space-y-4">
             <p className="text-xs text-zinc-400">
               Realize o pagamento utilizando a chave Pix celular abaixo:
             </p>
