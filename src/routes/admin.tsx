@@ -690,6 +690,13 @@ function AdminDashboard() {
   const isMasterAdmin = session?.email === "gleidmircristino@hotmail.com";
 
   if (subCheck?.status === "expired" && !isMasterAdmin) {
+    const planType = !subCheck?.plan || subCheck.plan === "gratuito" ? "gratuito" :
+      subCheck.plan === "mensal" ? "mensal" :
+      subCheck.plan === "trimestral" ? "trimestral" :
+      subCheck.plan === "semestral" ? "semestral" :
+      subCheck.plan === "anual" ? "anual" :
+      subCheck.plan;
+
     return (
       <div className="min-h-screen bg-zinc-950 text-white antialiased flex flex-col justify-between relative">
         {/* Top Header */}
@@ -698,14 +705,14 @@ function AdminDashboard() {
             <div className="flex items-center gap-3 min-w-0">
               <BarberGoLogo className="w-10 h-10 shrink-0 animate-pulse" />
               <div className="min-w-0">
-                <span className="text-base font-extrabold tracking-tight block truncate">DoctorCorpo <span className="text-amber-500">GO</span></span>
+                <span className="text-base font-extrabold tracking-tight block truncate">DoctorCorpo <span className="text-[#39ff14]">GO</span></span>
                 <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider block truncate">Conta Inativa</span>
               </div>
             </div>
             <div className="flex items-center gap-2 sm:gap-4 shrink-0">
               <button
                 onClick={handleLogout}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-950/30 border border-red-500/50 hover:bg-red-650 hover:border-red-500 text-red-400 hover:text-white px-3 sm:px-4 py-2 text-xs font-black transition-all cursor-pointer shadow-lg shadow-red-500/5 hover:shadow-red-500/20 active:scale-95"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-red-400 px-3 sm:px-4 py-2 text-xs font-bold border border-zinc-800 transition-colors cursor-pointer"
                 title="Sair"
               >
                 <LogOut className="h-4 w-4 shrink-0" /> <span className="hidden sm:inline">Sair</span>
@@ -716,42 +723,35 @@ function AdminDashboard() {
 
         {/* Block Body */}
         <main className="flex-1 mx-auto w-full max-w-4xl px-4 py-8 flex flex-col justify-center">
-          <div className="text-center max-w-2xl mx-auto mb-8">
-            <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 mb-4 animate-bounce">
+          <div className="text-center max-w-2xl mx-auto mb-8 animate-fade-in">
+            <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-[#39ff14]/10 text-[#39ff14] border border-[#39ff14]/20 mb-4 animate-bounce">
               <Lock className="h-8 w-8" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white animate-fade-in">
-              Acesso Inativo
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-black uppercase">
+              Plano Encerrado
             </h1>
-            <p className="text-zinc-400 text-sm mt-2">
-              Sua conta está inativa. Se você acabou de realizar o cadastro, solicite a liberação dos seus 30 dias de teste grátis com o administrador. Caso o seu período tenha acabado, você pode assinar um plano abaixo para reativar seu acesso.
+            <p className="text-zinc-300 text-sm mt-3 leading-relaxed max-w-md mx-auto font-medium">
+              Seu plano <span className="font-extrabold text-[#39ff14] uppercase">{planType}</span> encerrou, entre em contato com o ADM do aplicativo e regularise um novo plano.
             </p>
-          </div>
-
-          {/* Card de solicitação de liberação do Trial de 30 dias */}
-          <div className="bg-zinc-900/60 ring-1 ring-zinc-800 rounded-3xl p-6 mb-8 text-center max-w-2xl mx-auto space-y-4">
-            <h3 className="text-sm font-extrabold text-amber-500 uppercase tracking-widest">
-              Solicitar Teste Grátis
-            </h3>
-            <p className="text-xs text-zinc-300">
-              Se você acabou de criar a sua conta, clique no botão abaixo para solicitar ao administrador a liberação do seu <strong>período de testes de 30 dias gratuitamente</strong>!
-            </p>
-            <a
-              href={`https://wa.me/5562993299120?text=${encodeURIComponent(
-                `Olá Gleidmir! Acabei de cadastrar minha clínica no DoctorCorpo GO com o e-mail: ${session?.email || session?.email || "default"}. Gostaria de solicitar a ativação dos meus 30 dias de teste grátis!`
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 text-xs font-bold transition-all shadow-lg shadow-emerald-600/10 cursor-pointer active:scale-95"
-            >
-              <WhatsAppIcon className="h-4 w-4 fill-current shrink-0" /> Solicitar Ativação de 30 Dias Grátis
-            </a>
+            <div className="mt-6">
+              <a
+                href={`https://wa.me/5562993299120?text=${encodeURIComponent(
+                  `Olá Gleidmir! Meu plano *${planType?.toUpperCase()}* no DoctorCorpo GO encerrou e gostaria de regularizar meu acesso.`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-3.5 text-xs font-black transition-all shadow-lg shadow-emerald-600/15 cursor-pointer active:scale-95 uppercase tracking-wider"
+              >
+                <WhatsAppIcon className="h-4 w-4 fill-current shrink-0" /> Falar com o ADM (62) 99329-9120
+              </a>
+            </div>
           </div>
 
           <SubscriptionSection
             selectedPlan={selectedPlan}
             setSelectedPlan={setSelectedPlan}
             handleCopyPixKey={handleCopyPixKey}
+            shopName={shopName}
           />
         </main>
 
@@ -1975,10 +1975,10 @@ function SubscriptionSection({
   shopName: string;
 }) {
   const plans = [
-    { id: "mensal" as const, name: "Mensal", price: "R$ 49,90", rawPrice: 49.90, desc: "Acesso por 30 dias", detail: "R$ 49,90 / mês" },
-    { id: "trimestral" as const, name: "Trimestral", price: "R$ 124,90", rawPrice: 124.90, desc: "Acesso por 90 dias", detail: "R$ 41,63 / mês", popular: true },
-    { id: "semestral" as const, name: "Semestral", price: "R$ 224,90", rawPrice: 224.90, desc: "Acesso por 180 dias", detail: "R$ 37,48 / mês" },
-    { id: "anual" as const, name: "Anual", price: "R$ 399,90", rawPrice: 399.90, desc: "Acesso por 365 dias", detail: "R$ 33,32 / mês", bestDeal: true },
+    { id: "mensal" as const, name: "Mensal", price: "R$ 29,90", rawPrice: 29.90, desc: "Acesso por 30 dias", detail: "R$ 29,90 / mês" },
+    { id: "trimestral" as const, name: "Trimestral", price: "R$ 74,90", rawPrice: 74.90, desc: "Acesso por 90 dias", detail: "R$ 24,96 / mês", popular: true },
+    { id: "semestral" as const, name: "Semestral", price: "R$ 139,90", rawPrice: 139.90, desc: "Acesso por 180 dias", detail: "R$ 23,31 / mês" },
+    { id: "anual" as const, name: "Anual", price: "R$ 239,90", rawPrice: 239.90, desc: "Acesso por 365 dias", detail: "R$ 19,99 / mês", bestDeal: true },
   ];
 
   const currentPlan = plans.find(p => p.id === selectedPlan)!;
@@ -2001,17 +2001,17 @@ function SubscriptionSection({
               onClick={() => setSelectedPlan(p.id)}
               className={`relative flex flex-col justify-between p-5 rounded-2xl border text-left transition-all hover:scale-[1.02] active:scale-[0.98] ${
                 isSelected
-                  ? "bg-amber-500/10 border-amber-500 ring-2 ring-amber-500/30"
+                  ? "bg-[#39ff14]/5 border-[#39ff14] ring-2 ring-[#39ff14]/30"
                   : "bg-zinc-900/40 border-zinc-900 hover:border-zinc-800"
               }`}
             >
               {p.popular && (
-                <span className="absolute -top-2.5 left-4 rounded-full bg-amber-500 text-zinc-950 font-black text-[9px] px-2 py-0.5 uppercase tracking-wide">
+                <span className="absolute -top-2.5 left-4 rounded-full bg-[#39ff14] text-zinc-950 font-black text-[9px] px-2.5 py-0.5 uppercase tracking-wide">
                   Mais Popular
                 </span>
               )}
               {p.bestDeal && (
-                <span className="absolute -top-2.5 left-4 rounded-full bg-emerald-500 text-zinc-950 font-black text-[9px] px-2 py-0.5 uppercase tracking-wide">
+                <span className="absolute -top-2.5 left-4 rounded-full bg-[#39ff14] text-zinc-950 font-black text-[9px] px-2.5 py-0.5 uppercase tracking-wide">
                   Melhor Preço
                 </span>
               )}
@@ -2022,7 +2022,7 @@ function SubscriptionSection({
               </div>
               <div className="mt-4 pt-3 border-t border-zinc-900/60 w-full">
                 <p className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#39ff14]" />
                   {p.desc}
                 </p>
               </div>
@@ -2035,7 +2035,7 @@ function SubscriptionSection({
       <div className="bg-zinc-900/60 border border-zinc-900 rounded-3xl p-6">
         <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4 flex items-center gap-2">
           <DollarSign className="h-4 w-4 text-emerald-400" />
-          Pagamento do Plano {currentPlan.name}
+          PAGAMENTO DO PLANO {currentPlan.name.toUpperCase()}
         </h3>
 
         <div className="flex flex-col md:flex-row gap-6 items-center">
@@ -2054,7 +2054,7 @@ function SubscriptionSection({
           {/* Key and Info Container */}
           <div className="flex-1 w-full space-y-4">
             <p className="text-xs text-zinc-400">
-              Escaneie o QR Code ao lado com seu aplicativo do banco ou use a chave Pix celular abaixo:
+              Realize o pagamento utilizando a chave Pix celular abaixo:
             </p>
 
             <div className="space-y-3">
@@ -2069,7 +2069,7 @@ function SubscriptionSection({
                 <button
                   type="button"
                   onClick={handleCopyPixKey}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 px-3.5 py-2 text-xs font-bold transition-all shrink-0 active:scale-95 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#39ff14] hover:bg-[#2ee610] text-zinc-950 px-3.5 py-2 text-xs font-black transition-all shrink-0 active:scale-95 cursor-pointer"
                 >
                   <Copy className="h-3.5 w-3.5" />
                   <span>Copiar</span>
@@ -2094,11 +2094,9 @@ function SubscriptionSection({
               href={getWhatsAppLink()}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-green-600 hover:bg-green-500 text-white py-3.5 text-xs font-bold transition-all shadow-lg shadow-green-600/15 active:scale-[0.99]"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-green-600 hover:bg-green-500 text-white py-3.5 text-xs font-bold transition-all shadow-lg shadow-green-600/15 active:scale-[0.99] uppercase"
             >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" aria-hidden="true">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-              </svg>
+              <WhatsAppIcon className="h-4 w-4 shrink-0" />
               <span>Enviar Comprovante pelo WhatsApp</span>
             </a>
           </div>
