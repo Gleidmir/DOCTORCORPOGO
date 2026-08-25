@@ -234,9 +234,8 @@ function AdminDashboard() {
     if (!isSilent) setLoading(true);
     try {
       const localUser = getCurrentUser();
-      const tenantEmail = isSupabaseConfigured
-        ? (await supabase.auth.getSession()).data.session?.user?.email || "default"
-        : localUser?.email || "default";
+      const sessionUser = isSupabaseConfigured ? (await supabase.auth.getSession()).data.session?.user?.email : null;
+      const tenantEmail = sessionUser || localUser?.email || "default";
 
       const [a, c, svcs, barbs, prof] = await Promise.all([
         getAppointments(),
@@ -1820,16 +1819,15 @@ function AdminDashboard() {
                       setSavingProfile(true);
                       try {
                         const localUser = getCurrentUser();
-                        const tenantEmail = isSupabaseConfigured
-                          ? (await supabase.auth.getSession()).data.session?.user?.email || "default"
-                          : localUser?.email || "default";
+                        const sessionUser = isSupabaseConfigured ? (await supabase.auth.getSession()).data.session?.user?.email : null;
+                        const tenantEmail = sessionUser || localUser?.email || "default";
 
                         await updateBarberShopProfile({
                           tenantId: tenantEmail,
                           name: shopName,
                           logoUrl: shopLogoUrl.trim() || undefined,
                         });
-                        await loadAllData();
+                        await loadAllData(false);
                       } catch (error) {
                         console.error(error);
                       } finally {
@@ -1851,7 +1849,18 @@ function AdminDashboard() {
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Link da Foto / Logotipo da Clínica</label>
+                      <div className="flex items-center justify-between">
+                        <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Link da Foto / Logotipo da Clínica</label>
+                        {shopLogoUrl ? (
+                          <button
+                            type="button"
+                            onClick={() => setShopLogoUrl("")}
+                            className="text-[10px] text-red-400 hover:text-red-300 font-bold transition-colors cursor-pointer"
+                          >
+                            ✕ Remover Imagem
+                          </button>
+                        ) : null}
+                      </div>
                       <input
                         type="text"
                         value={shopLogoUrl}

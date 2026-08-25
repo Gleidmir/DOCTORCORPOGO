@@ -1306,12 +1306,13 @@ export const getDashboardStats = async (
 
 // --- BARBER SHOP PROFILE ---
 export const getBarberShopProfile = async (tenantId: string): Promise<BarberShopProfile | null> => {
+  const targetTenantId = (!tenantId || tenantId === "default") ? getCurrentTenantId() : tenantId;
   if (isSupabaseConfigured) {
     try {
       const { data, error } = await supabase
         .from("barber_shops")
         .select("*")
-        .eq("tenant_id", tenantId)
+        .eq("tenant_id", targetTenantId)
         .maybeSingle();
       
       if (error) throw error;
@@ -1320,14 +1321,14 @@ export const getBarberShopProfile = async (tenantId: string): Promise<BarberShop
         const prof: BarberShopProfile = {
           tenantId: data.tenant_id,
           name: data.name,
-          logoUrl: data.logo_url || undefined,
+          logoUrl: data.logo_url?.trim() || undefined,
           createdAt: data.created_at,
           subscriptionPlan: data.subscription_plan || "mensal",
           subscriptionStatus: data.subscription_status || "expired",
           subscriptionExpiresAt: data.subscription_expires_at || undefined,
         };
         if (!isServer) {
-          const configKey = `mbg_tenant_config_${tenantId}`;
+          const configKey = `mbg_tenant_config_${targetTenantId}`;
           const currentConfigStr = window.localStorage.getItem(configKey);
           let isRecreated = false;
           if (currentConfigStr) {
@@ -1344,13 +1345,13 @@ export const getBarberShopProfile = async (tenantId: string): Promise<BarberShop
           }
 
           if (isRecreated) {
-            console.log("Tenant was recreated on Supabase. Clearing stale local cache...");
-            window.localStorage.removeItem(`mbg_profile_${tenantId}`);
-            window.localStorage.removeItem(`mbg_tenant_config_${tenantId}`);
-            window.localStorage.removeItem(`mbg_barbers_${tenantId}`);
-            window.localStorage.removeItem(`mbg_services_${tenantId}`);
-            window.localStorage.removeItem(`mbg_clients_${tenantId}`);
-            window.localStorage.removeItem(`mbg_appointments_${tenantId}`);
+            console.log("Tenant foi recriado no servidor. Limpando cache local antigo...");
+            window.localStorage.removeItem(`mbg_profile_${targetTenantId}`);
+            window.localStorage.removeItem(`mbg_tenant_config_${targetTenantId}`);
+            window.localStorage.removeItem(`mbg_barbers_${targetTenantId}`);
+            window.localStorage.removeItem(`mbg_services_${targetTenantId}`);
+            window.localStorage.removeItem(`mbg_clients_${targetTenantId}`);
+            window.localStorage.removeItem(`mbg_appointments_${targetTenantId}`);
             
             const localSessionStr = window.localStorage.getItem("mbg_session");
             if (localSessionStr) {
@@ -1363,7 +1364,7 @@ export const getBarberShopProfile = async (tenantId: string): Promise<BarberShop
             }
           }
 
-          window.localStorage.setItem(`mbg_profile_${tenantId}`, JSON.stringify(prof));
+          window.localStorage.setItem(`mbg_profile_${targetTenantId}`, JSON.stringify(prof));
           
           const updatedConfig: TenantConfig = {
             registeredAt: data.created_at || new Date().toISOString(),
@@ -1377,23 +1378,23 @@ export const getBarberShopProfile = async (tenantId: string): Promise<BarberShop
       } else {
         // Se foi excluído do servidor, limpa as chaves locais associadas a esse tenant
         if (!isServer) {
-          window.localStorage.removeItem(`mbg_profile_${tenantId}`);
-          window.localStorage.removeItem(`mbg_tenant_config_${tenantId}`);
-          window.localStorage.removeItem(`mbg_barbers_${tenantId}`);
-          window.localStorage.removeItem(`mbg_services_${tenantId}`);
-          window.localStorage.removeItem(`mbg_clients_${tenantId}`);
-          window.localStorage.removeItem(`mbg_appointments_${tenantId}`);
+          window.localStorage.removeItem(`mbg_profile_${targetTenantId}`);
+          window.localStorage.removeItem(`mbg_tenant_config_${targetTenantId}`);
+          window.localStorage.removeItem(`mbg_barbers_${targetTenantId}`);
+          window.localStorage.removeItem(`mbg_services_${targetTenantId}`);
+          window.localStorage.removeItem(`mbg_clients_${targetTenantId}`);
+          window.localStorage.removeItem(`mbg_appointments_${targetTenantId}`);
         }
       }
       return null;
     } catch (e) {
-      console.warn("Erro ao buscar perfil da barbearia no Supabase:", e);
+      console.warn("Erro ao buscar perfil da clínica no Supabase:", e);
     }
   }
 
   // Fallback local
   if (!isServer) {
-    const stored = window.localStorage.getItem(`mbg_profile_${tenantId}`);
+    const stored = window.localStorage.getItem(`mbg_profile_${targetTenantId}`);
     if (stored) {
       try {
         return JSON.parse(stored) as BarberShopProfile;
@@ -1406,18 +1407,28 @@ export const getBarberShopProfile = async (tenantId: string): Promise<BarberShop
 };
 
 export const updateBarberShopProfile = async (profile: BarberShopProfile): Promise<void> => {
+  const targetTenantId = (!profile.tenantId || profile.tenantId === "default") ? getCurrentTenantId() : profile.tenantId;
+  const cleanLogoUrl = profile.logoUrl?.trim() || undefined;
+
+  const cleanProfile: BarberShopProfile = {
+    ...profile,
+    tenantId: targetTenantId,
+    name: profile.name.trim(),
+    logoUrl: cleanLogoUrl,
+  };
+
   if (isSupabaseConfigured) {
     try {
       const { error } = await supabase
         .from("barber_shops")
         .upsert({
-          tenant_id: profile.tenantId,
-          name: profile.name,
-          logo_url: profile.logoUrl || null,
+          tenant_id: targetTenantId,
+          name: cleanProfile.name,
+          logo_url: cleanLogoUrl || null,
         });
 
       if (error) throw error;
-      toast.success("Perfil da barbearia atualizado no servidor!");
+      toast.success("Perfil da clínica atualizado no servidor!");
     } catch (e) {
       console.error("Erro ao salvar perfil no Supabase:", e);
       toast.error("Erro ao salvar no servidor, atualizando localmente...");
@@ -1426,8 +1437,8 @@ export const updateBarberShopProfile = async (profile: BarberShopProfile): Promi
 
   // Sempre salva localmente como fallback/sincronização
   if (!isServer) {
-    window.localStorage.setItem(`mbg_profile_${profile.tenantId}`, JSON.stringify(profile));
-    toast.success("Perfil da barbearia atualizado localmente!");
+    window.localStorage.setItem(`mbg_profile_${targetTenantId}`, JSON.stringify(cleanProfile));
+    toast.success("Perfil da clínica atualizado com sucesso!");
   }
 };
 
