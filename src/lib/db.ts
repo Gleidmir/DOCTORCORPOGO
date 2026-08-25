@@ -1431,6 +1431,39 @@ export const updateBarberShopProfile = async (profile: BarberShopProfile): Promi
   }
 };
 
+export const uploadLogoToSupabase = async (dataUrl: string, tenantId: string): Promise<string | null> => {
+  if (!isSupabaseConfigured) return null;
+  try {
+    const res = await fetch(dataUrl);
+    const blob = await res.blob();
+    const fileExt = "jpg";
+    const fileName = `logo_${tenantId.replace(/[^a-zA-Z0-9]/g, "_")}_${Date.now()}.${fileExt}`;
+    const filePath = `logos/${fileName}`;
+
+    const { error } = await supabase.storage
+      .from("clinic-logos")
+      .upload(filePath, blob, {
+        contentType: "image/jpeg",
+        upsert: true,
+      });
+
+    if (error) {
+      console.warn("Upload no Supabase Storage falhou ou bucket 'clinic-logos' não existe:", error);
+      return null;
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from("clinic-logos")
+      .getPublicUrl(filePath);
+
+    return publicUrlData?.publicUrl || null;
+  } catch (e) {
+    console.error("Erro ao subir imagem no Supabase Storage:", e);
+    return null;
+  }
+};
+
+
 // --- MASTER ADMIN ACTIONS ---
 export const getAllBarberShops = async (): Promise<BarberShopProfile[]> => {
   if (isSupabaseConfigured) {

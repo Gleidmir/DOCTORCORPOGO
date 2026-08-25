@@ -72,6 +72,7 @@ import {
   getTenantConfig,
   getBarberShopProfile,
   updateBarberShopProfile,
+  uploadLogoToSupabase,
   type BarberShopProfile,
   type SubscriptionCheck,
   DEFAULT_WORK_HOURS,
@@ -1850,68 +1851,17 @@ function AdminDashboard() {
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Foto da Clínica / Logotipo</label>
-                      <div className="mt-1.5 space-y-2">
-                        <div className="flex gap-2 items-center">
-                          <label className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900 border border-amber-500/40 hover:bg-zinc-800 text-amber-300 px-4 py-3 text-xs font-bold transition-all cursor-pointer shadow-sm">
-                            <Upload className="h-4 w-4 text-amber-400" />
-                            <span>Enviar Foto do Celular / PC</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (!file) return;
-                                if (file.size > 10 * 1024 * 1024) {
-                                  toast.error("A foto deve ter menos de 10MB.");
-                                  return;
-                                }
-                                const reader = new FileReader();
-                                reader.onload = (event) => {
-                                  const img = new Image();
-                                  img.onload = () => {
-                                    const canvas = document.createElement("canvas");
-                                    const maxDim = 400;
-                                    let width = img.width;
-                                    let height = img.height;
-                                    if (width > height) {
-                                      if (width > maxDim) {
-                                        height = Math.round((height * maxDim) / width);
-                                        width = maxDim;
-                                      }
-                                    } else {
-                                      if (height > maxDim) {
-                                        width = Math.round((width * maxDim) / height);
-                                        height = maxDim;
-                                      }
-                                    }
-                                    canvas.width = width;
-                                    canvas.height = height;
-                                    const ctx = canvas.getContext("2d");
-                                    ctx?.drawImage(img, 0, 0, width, height);
-                                    const compressed = canvas.toDataURL("image/jpeg", 0.85);
-                                    setShopLogoUrl(compressed);
-                                    toast.success("Foto selecionada e otimizada! Clique em Salvar Configurações.");
-                                  };
-                                  img.src = event.target?.result as string;
-                                };
-                                reader.readAsDataURL(file);
-                              }}
-                            />
-                          </label>
-                        </div>
-                        <input
-                          type="text"
-                          value={shopLogoUrl}
-                          onChange={(e) => setShopLogoUrl(e.target.value)}
-                          placeholder="Ou cole o link da foto (https://...)"
-                          className="w-full rounded-xl bg-zinc-950/90 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-600 ring-1 ring-zinc-800 focus:ring-amber-400 focus:outline-none transition-all"
-                        />
-                        <p className="text-[10px] text-zinc-500 leading-relaxed font-semibold">
-                          Esta foto aparecerá no topo do app do cliente e no card de prévia do WhatsApp quando o link de agendamento for enviado!
-                        </p>
-                      </div>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Link da Foto / Logotipo da Clínica</label>
+                      <input
+                        type="text"
+                        value={shopLogoUrl}
+                        onChange={(e) => setShopLogoUrl(e.target.value)}
+                        placeholder="Cole o link da foto (ex: https://i.postimg.cc/...)"
+                        className="w-full rounded-xl bg-zinc-950 mt-1.5 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-600 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.15)] focus:ring-amber-400 focus:outline-none transition-all"
+                      />
+                      <p className="text-[10px] text-zinc-500 leading-relaxed font-semibold mt-1.5">
+                        Cole o link direto da imagem (ex: Postimages, Imgur ou Supabase) para que a foto da clínica apareça no topo do app e na prévia do WhatsApp quando o link de agendamento for enviado!
+                      </p>
                     </div>
 
                     <button
