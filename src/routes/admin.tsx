@@ -27,7 +27,10 @@ import {
   KeyRound,
   RefreshCw,
   Store,
+  Upload,
+  Image as ImageIcon,
 } from "lucide-react";
+import { updatePageMeta } from "../lib/meta";
 import {
   AreaChart,
   Area,
@@ -250,6 +253,7 @@ function AdminDashboard() {
       setBarbers(barbs);
       if (prof) {
         setShopProfile(prof);
+        updatePageMeta(prof);
         if (!isSilent) {
           setShopName(prof.name);
           setShopLogoUrl(prof.logoUrl || "");
@@ -925,8 +929,8 @@ function AdminDashboard() {
                   <a
                     href={`https://wa.me/?text=${encodeURIComponent(
                       shopName
-                        ? `Olá! Agende sua consulta na clínica *${shopName.toUpperCase()}* online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email || "default"}`
-                        : `Olá! Agende sua consulta na nossa clínica online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email || "default"}`
+                        ? `Olá! Agende sua avaliação na clínica: *${shopName.toUpperCase()}* online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email || "default"}`
+                        : `Olá! Agende sua avaliação na nossa clínica online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email || "default"}`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -1846,17 +1850,68 @@ function AdminDashboard() {
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Link do Logotipo / Imagem (URL)</label>
-                      <input
-                        type="url"
-                        value={shopLogoUrl}
-                        onChange={(e) => setShopLogoUrl(e.target.value)}
-                        placeholder="Ex: https://link-da-imagem.com/logo.png"
-                        className="w-full rounded-xl bg-zinc-950/90 px-4 py-3.5 text-sm text-amber-300 placeholder:text-zinc-655 ring-2 ring-amber-500/50 shadow-[0_0_10px_rgba(20,184,166,0.25)] focus:ring-amber-400 focus:outline-none transition-all mt-1.5"
-                      />
-                      <p className="text-[10px] text-zinc-450 mt-1.5 leading-relaxed font-semibold">
-                        Copie e cole o endereço/link de uma foto pública (do Instagram, Facebook, Imgur, Postimages, etc.). Se não colocar nenhuma imagem, será usada a logo temática padrão de Goiás.
-                      </p>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Foto da Clínica / Logotipo</label>
+                      <div className="mt-1.5 space-y-2">
+                        <div className="flex gap-2 items-center">
+                          <label className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900 border border-amber-500/40 hover:bg-zinc-800 text-amber-300 px-4 py-3 text-xs font-bold transition-all cursor-pointer shadow-sm">
+                            <Upload className="h-4 w-4 text-amber-400" />
+                            <span>Enviar Foto do Celular / PC</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                if (file.size > 10 * 1024 * 1024) {
+                                  toast.error("A foto deve ter menos de 10MB.");
+                                  return;
+                                }
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                  const img = new Image();
+                                  img.onload = () => {
+                                    const canvas = document.createElement("canvas");
+                                    const maxDim = 400;
+                                    let width = img.width;
+                                    let height = img.height;
+                                    if (width > height) {
+                                      if (width > maxDim) {
+                                        height = Math.round((height * maxDim) / width);
+                                        width = maxDim;
+                                      }
+                                    } else {
+                                      if (height > maxDim) {
+                                        width = Math.round((width * maxDim) / height);
+                                        height = maxDim;
+                                      }
+                                    }
+                                    canvas.width = width;
+                                    canvas.height = height;
+                                    const ctx = canvas.getContext("2d");
+                                    ctx?.drawImage(img, 0, 0, width, height);
+                                    const compressed = canvas.toDataURL("image/jpeg", 0.85);
+                                    setShopLogoUrl(compressed);
+                                    toast.success("Foto selecionada e otimizada! Clique em Salvar Configurações.");
+                                  };
+                                  img.src = event.target?.result as string;
+                                };
+                                reader.readAsDataURL(file);
+                              }}
+                            />
+                          </label>
+                        </div>
+                        <input
+                          type="text"
+                          value={shopLogoUrl}
+                          onChange={(e) => setShopLogoUrl(e.target.value)}
+                          placeholder="Ou cole o link da foto (https://...)"
+                          className="w-full rounded-xl bg-zinc-950/90 px-4 py-3 text-xs text-amber-300 placeholder:text-zinc-600 ring-1 ring-zinc-800 focus:ring-amber-400 focus:outline-none transition-all"
+                        />
+                        <p className="text-[10px] text-zinc-500 leading-relaxed font-semibold">
+                          Esta foto aparecerá no topo do app do cliente e no card de prévia do WhatsApp quando o link de agendamento for enviado!
+                        </p>
+                      </div>
                     </div>
 
                     <button

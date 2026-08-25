@@ -38,6 +38,8 @@ import {
   type SubscriptionCheck,
 } from "../lib/db";
 
+import { updatePageMeta, DEFAULT_OG_IMAGE } from "../lib/meta";
+
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
@@ -47,12 +49,41 @@ function WhatsAppIcon({ className }: { className?: string }) {
 }
 
 export const Route = createFileRoute("/client")({
-  head: () => ({
-    meta: [
-      { title: "Painel do Cliente - DoctorCorpo GO" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
-  }),
+  loader: async ({ location }) => {
+    const search = location.search as Record<string, string | undefined>;
+    const tenant = search?.t || search?.barberia || search?.clinica || "";
+    if (tenant) {
+      const profile = await getBarberShopProfile(tenant);
+      return { profile };
+    }
+    return { profile: null };
+  },
+  head: ({ loaderData }) => {
+    const profile = loaderData?.profile;
+    const title = profile?.name ? `${profile.name} — Agendamento Online` : "Painel do Cliente - DoctorCorpo GO";
+    const description = profile?.name
+      ? `Agende seu horário na clínica ${profile.name} online de forma rápida e prática!`
+      : "DoctorCorpo GO — Sistema de agendamento online fácil e prático.";
+    const logoUrl = profile?.logoUrl?.trim() || DEFAULT_OG_IMAGE;
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:image", content: logoUrl },
+        { property: "og:type", content: "website" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        { name: "twitter:image", content: logoUrl },
+      ],
+      links: profile?.logoUrl ? [
+        { rel: "icon", href: logoUrl },
+        { rel: "apple-touch-icon", href: logoUrl },
+      ] : [],
+    };
+  },
   component: ClientDashboard,
 });
 
@@ -89,6 +120,7 @@ function ClientDashboard() {
       getBarberShopProfile(tenant)
         .then((prof) => {
           setShopProfile(prof);
+          updatePageMeta(prof);
           const check = checkSubscriptionStatus();
           setSubCheck(check);
           setProfileLoaded(true);

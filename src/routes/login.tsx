@@ -6,17 +6,48 @@ import { toast } from "sonner";
 import { getCurrentUser, setCurrentUser, addClient, logout, getBarberShopProfile } from "../lib/db";
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
 
+import { updatePageMeta, DEFAULT_OG_IMAGE } from "../lib/meta";
+
 export const Route = createFileRoute("/login")({
-  head: () => ({
-    meta: [
-      { title: "Entrar - DoctorCorpo GO" },
-      { name: "description", content: "Acesse sua conta para agendar consultas ou gerenciar atendimentos na clínica." },
-      { name: "robots", content: "index, follow" },
-    ],
-    links: [
-      { rel: "canonical", href: "https://doctorcorpogo.netlify.app/login" }
-    ]
-  }),
+  loader: async ({ location }) => {
+    const search = location.search as Record<string, string | undefined>;
+    const tenant = search?.t || search?.barberia || search?.clinica || "";
+    if (tenant) {
+      const profile = await getBarberShopProfile(tenant);
+      return { profile };
+    }
+    return { profile: null };
+  },
+  head: ({ loaderData }) => {
+    const profile = loaderData?.profile;
+    const title = profile?.name ? `${profile.name} — Agendamento Online` : "Entrar - DoctorCorpo GO";
+    const description = profile?.name
+      ? `Agende sua consulta ou procedimento na clínica ${profile.name} online.`
+      : "Acesse sua conta para agendar consultas ou gerenciar atendimentos na clínica.";
+    const logoUrl = profile?.logoUrl?.trim() || DEFAULT_OG_IMAGE;
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:image", content: logoUrl },
+        { property: "og:type", content: "website" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        { name: "twitter:image", content: logoUrl },
+        { name: "robots", content: "index, follow" },
+      ],
+      links: [
+        { rel: "canonical", href: "https://doctorcorpogo.netlify.app/login" },
+        ...(profile?.logoUrl ? [
+          { rel: "icon", href: logoUrl },
+          { rel: "apple-touch-icon", href: logoUrl }
+        ] : [])
+      ]
+    };
+  },
   component: LoginPage,
 });
 
@@ -53,13 +84,19 @@ function LoginPage() {
           window.localStorage.setItem("mbg_client_tenant", tenant);
           setIsClientOnly(true);
           setActiveTab("client");
-          getBarberShopProfile(tenant).then(setShopProfile);
+          getBarberShopProfile(tenant).then((prof) => {
+            setShopProfile(prof);
+            updatePageMeta(prof);
+          });
         } else {
           setIsClientOnly(false);
           setActiveTab("admin");
           const storedTenant = window.localStorage.getItem("mbg_client_tenant");
           if (storedTenant) {
-            getBarberShopProfile(storedTenant).then(setShopProfile);
+            getBarberShopProfile(storedTenant).then((prof) => {
+              setShopProfile(prof);
+              updatePageMeta(prof);
+            });
           }
         }
       }
