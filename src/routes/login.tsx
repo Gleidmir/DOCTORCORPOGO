@@ -103,10 +103,11 @@ function LoginPage() {
     }
 
     const checkSession = async () => {
+      const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
       if (isSupabaseConfigured) {
         const { data: { session } } = await supabase.auth.getSession();
         
-        const isClientLink = params.get("t") || params.get("clinica") || params.get("barberia");
+        const isClientLink = urlParams.get("t") || urlParams.get("clinica") || urlParams.get("barberia");
 
         if (session && !isClientLink) {
           setCurrentUser({
@@ -121,7 +122,7 @@ function LoginPage() {
           if (localSession && localSession.role === "admin") {
             logout();
           } else if (localSession && localSession.role === "client") {
-            const isOverride = params.get("admin") === "true" || params.get("role") === "admin";
+            const isOverride = urlParams.get("admin") === "true" || urlParams.get("role") === "admin";
             if (!isOverride) {
               navigate({ to: "/client" });
             }
@@ -133,8 +134,7 @@ function LoginPage() {
           if (session.role === "admin") {
             navigate({ to: "/admin" });
           } else {
-            const params = new URLSearchParams(window.location.search);
-            const isOverride = params.get("admin") === "true" || params.get("role") === "admin";
+            const isOverride = urlParams.get("admin") === "true" || urlParams.get("role") === "admin";
             if (!isOverride) {
               navigate({ to: "/client" });
             }

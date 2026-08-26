@@ -694,12 +694,12 @@ function AdminDashboard() {
   const isMasterAdmin = session?.email === "gleidmircristino@hotmail.com";
 
   if (subCheck?.status === "expired" && !isMasterAdmin) {
-    const planType = !subCheck?.plan || subCheck.plan === "gratuito" ? "gratuito" :
+    const planType = !subCheck?.plan || (subCheck.plan as string) === "gratuito" ? "gratuito" :
       subCheck.plan === "mensal" ? "mensal" :
       subCheck.plan === "trimestral" ? "trimestral" :
       subCheck.plan === "semestral" ? "semestral" :
       subCheck.plan === "anual" ? "anual" :
-      subCheck.plan;
+      (subCheck.plan as string);
 
     return (
       <div className="min-h-screen bg-zinc-950 text-white antialiased flex flex-col justify-between relative">

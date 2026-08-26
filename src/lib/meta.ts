@@ -50,5 +50,4 @@ export const updatePageMeta = (profile: BarberShopProfile | null) => {
     setLink("icon", logoUrl);
     setLink("apple-touch-icon", logoUrl);
   }
-};
-ca
+};
