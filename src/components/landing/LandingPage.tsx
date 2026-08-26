@@ -403,12 +403,13 @@ export function LandingPage() {
             </span>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            <a
-              href="/login?admin=true"
+            <Link
+              to="/login"
+              search={{ admin: "true" }}
               className="rounded-lg border border-emerald-500 bg-zinc-950 px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-[10px] sm:text-xs md:text-sm font-bold text-emerald-400 hover:text-zinc-950 hover:bg-emerald-500 transition-all whitespace-nowrap"
             >
               ENTRAR
-            </a>
+            </Link>
             {!showPlans ? (
               <button
                 onClick={() => setShowPlans(true)}

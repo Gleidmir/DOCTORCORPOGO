@@ -52,6 +52,7 @@ export const Route = createFileRoute("/client")({
   validateSearch: (search: Record<string, unknown>) => {
     return {
       t: (search.t as string) || (search.barberia as string) || (search.clinica as string) || "",
+      v: search.v ? String(search.v) : "",
     };
   },
   loader: async ({ search }) => {

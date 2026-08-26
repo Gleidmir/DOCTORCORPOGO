@@ -12,6 +12,8 @@ export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>) => {
     return {
       t: (search.t as string) || (search.barberia as string) || (search.clinica as string) || "",
+      admin: search.admin ? String(search.admin) : "",
+      role: search.role ? String(search.role) : "",
     };
   },
   loader: async ({ search }) => {
