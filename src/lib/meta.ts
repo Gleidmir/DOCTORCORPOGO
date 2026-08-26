@@ -41,7 +41,9 @@ export const updatePageMeta = (profile: BarberShopProfile | null) => {
   setMeta("property", "og:title", title);
   setMeta("property", "og:description", description);
   setMeta("property", "og:image", logoUrl);
+  setMeta("property", "og:image:secure_url", logoUrl);
 
+  setMeta("name", "twitter:card", "summary_large_image");
   setMeta("name", "twitter:title", title);
   setMeta("name", "twitter:description", description);
   setMeta("name", "twitter:image", logoUrl);

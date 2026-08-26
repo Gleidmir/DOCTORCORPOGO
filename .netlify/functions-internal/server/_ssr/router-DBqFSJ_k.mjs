@@ -1158,12 +1158,10 @@ const Route$4 = createRootRouteWithContext()({
       { property: "og:title", content: "DOCTORCORPO GO" },
       { property: "og:description", content: "DoctorCorpo GO — Seu horário, seu procedimento, você no controle. Sistema de agendamento online fácil e prático para clínicas de estética e odontologia." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@doctorcorpogo" },
       { name: "twitter:title", content: "DOCTORCORPO GO" },
       { name: "twitter:description", content: "DoctorCorpo GO — Seu horário, seu procedimento, você no controle. Sistema de agendamento online fácil e prático para clínicas de estética e odontologia." },
-      { property: "og:image", content: "https://doctorcorpogo.netlify.app/og_image.png?v=5" },
-      { name: "twitter:image", content: "https://doctorcorpogo.netlify.app/og_image.png?v=5" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
@@ -1283,6 +1281,8 @@ const updatePageMeta = (profile) => {
   setMeta("property", "og:title", title);
   setMeta("property", "og:description", description);
   setMeta("property", "og:image", logoUrl);
+  setMeta("property", "og:image:secure_url", logoUrl);
+  setMeta("name", "twitter:card", "summary_large_image");
   setMeta("name", "twitter:title", title);
   setMeta("name", "twitter:description", description);
   setMeta("name", "twitter:image", logoUrl);
@@ -1291,8 +1291,7 @@ const updatePageMeta = (profile) => {
     setLink("apple-touch-icon", logoUrl);
   }
 };
-ca;
-const $$splitComponentImporter$3 = () => import("./login-lQbtvAE9.mjs");
+const $$splitComponentImporter$3 = () => import("./login-SRkxTaNB.mjs");
 const Route$3 = createFileRoute("/login")({
   loader: async ({
     location
@@ -1332,8 +1331,14 @@ const Route$3 = createFileRoute("/login")({
         property: "og:image",
         content: logoUrl
       }, {
+        property: "og:image:secure_url",
+        content: logoUrl
+      }, {
         property: "og:type",
         content: "website"
+      }, {
+        name: "twitter:card",
+        content: "summary_large_image"
       }, {
         name: "twitter:title",
         content: title
@@ -1361,7 +1366,7 @@ const Route$3 = createFileRoute("/login")({
   },
   component: lazyRouteComponent($$splitComponentImporter$3, "component")
 });
-const $$splitComponentImporter$2 = () => import("./client-CySuJKCS.mjs");
+const $$splitComponentImporter$2 = () => import("./client-BgSEueMv.mjs");
 const Route$2 = createFileRoute("/client")({
   loader: async ({
     location
@@ -1401,8 +1406,14 @@ const Route$2 = createFileRoute("/client")({
         property: "og:image",
         content: logoUrl
       }, {
+        property: "og:image:secure_url",
+        content: logoUrl
+      }, {
         property: "og:type",
         content: "website"
+      }, {
+        name: "twitter:card",
+        content: "summary_large_image"
       }, {
         name: "twitter:title",
         content: title
@@ -1424,7 +1435,7 @@ const Route$2 = createFileRoute("/client")({
   },
   component: lazyRouteComponent($$splitComponentImporter$2, "component")
 });
-const $$splitComponentImporter$1 = () => import("./admin-1Jjj5Idj.mjs");
+const $$splitComponentImporter$1 = () => import("./admin-bqAtmioS.mjs");
 const Route$1 = createFileRoute("/admin")({
   head: () => ({
     meta: [{
@@ -1436,7 +1447,7 @@ const Route$1 = createFileRoute("/admin")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-const $$splitComponentImporter = () => import("./index-B7j-YYrW.mjs");
+const $$splitComponentImporter = () => import("./index-BViqY9f0.mjs");
 const Route = createFileRoute("/")({
   head: () => ({
     meta: [{
@@ -1453,6 +1464,15 @@ const Route = createFileRoute("/")({
     }, {
       property: "og:type",
       content: "website"
+    }, {
+      property: "og:image",
+      content: "https://doctorcorpogo.netlify.app/og_image.png?v=5"
+    }, {
+      name: "twitter:card",
+      content: "summary_large_image"
+    }, {
+      name: "twitter:image",
+      content: "https://doctorcorpogo.netlify.app/og_image.png?v=5"
     }, {
       name: "keywords",
       content: "dentista, clinica de estetica, harmonização facial, preenchimento labial, botox, odontologia, clareamento dental, doctorcorpogo, doctorcorpo, agendamento de consulta, estetica goiás"

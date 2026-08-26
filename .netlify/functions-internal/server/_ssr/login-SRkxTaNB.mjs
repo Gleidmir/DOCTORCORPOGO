@@ -2,7 +2,7 @@ import { r as reactExports, j as jsxRuntimeExports } from "../_libs/react.mjs";
 import { d as useNavigate } from "../_libs/tanstack__react-router.mjs";
 import { B as BarberGoLogo } from "./logo-Cy3MS0-l.mjs";
 import { t as toast } from "../_libs/sonner.mjs";
-import { g as getBarberShopProfile, u as updatePageMeta, i as isSupabaseConfigured, s as supabase, a as setCurrentUser, b as getCurrentUser, l as logout, c as addClient } from "./router-BmcCHDYy.mjs";
+import { g as getBarberShopProfile, u as updatePageMeta, i as isSupabaseConfigured, s as supabase, a as setCurrentUser, b as getCurrentUser, l as logout, c as addClient } from "./router-DBqFSJ_k.mjs";
 import { U as User, P as Phone, L as LoaderCircle, M as Mail, a as Lock } from "../_libs/lucide-react.mjs";
 import "../_libs/tanstack__router-core.mjs";
 import "../_libs/tanstack__history.mjs";
@@ -41,15 +41,15 @@ function LoginPage() {
   const [adminPassword, setAdminPassword] = reactExports.useState("");
   reactExports.useEffect(() => {
     if (typeof window !== "undefined") {
-      const params2 = new URLSearchParams(window.location.search);
-      const isOverride = params2.get("admin") === "true" || params2.get("role") === "admin";
+      const params = new URLSearchParams(window.location.search);
+      const isOverride = params.get("admin") === "true" || params.get("role") === "admin";
       setIsAdminOverride(isOverride);
       if (isOverride) {
         setIsClientOnly(false);
         setActiveTab("admin");
         window.localStorage.removeItem("mbg_client_tenant");
       } else {
-        const tenant = params2.get("t") || params2.get("clinica") || params2.get("barberia");
+        const tenant = params.get("t") || params.get("clinica") || params.get("barberia");
         if (tenant) {
           window.localStorage.setItem("mbg_client_tenant", tenant);
           setIsClientOnly(true);
@@ -72,13 +72,14 @@ function LoginPage() {
       }
     }
     const checkSession = async () => {
+      const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
       if (isSupabaseConfigured) {
         const {
           data: {
             session
           }
         } = await supabase.auth.getSession();
-        const isClientLink = params.get("t") || params.get("clinica") || params.get("barberia");
+        const isClientLink = urlParams.get("t") || urlParams.get("clinica") || urlParams.get("barberia");
         if (session && !isClientLink) {
           setCurrentUser({
             role: "admin",
@@ -93,7 +94,7 @@ function LoginPage() {
           if (localSession && localSession.role === "admin") {
             logout();
           } else if (localSession && localSession.role === "client") {
-            const isOverride = params.get("admin") === "true" || params.get("role") === "admin";
+            const isOverride = urlParams.get("admin") === "true" || urlParams.get("role") === "admin";
             if (!isOverride) {
               navigate({
                 to: "/client"
@@ -109,8 +110,7 @@ function LoginPage() {
               to: "/admin"
             });
           } else {
-            const params2 = new URLSearchParams(window.location.search);
-            const isOverride = params2.get("admin") === "true" || params2.get("role") === "admin";
+            const isOverride = urlParams.get("admin") === "true" || urlParams.get("role") === "admin";
             if (!isOverride) {
               navigate({
                 to: "/client"

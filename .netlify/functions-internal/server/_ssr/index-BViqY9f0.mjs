@@ -1,7 +1,7 @@
 import { r as reactExports, j as jsxRuntimeExports } from "../_libs/react.mjs";
 import { d as useNavigate } from "../_libs/tanstack__react-router.mjs";
 import { B as BarberGoLogo } from "./logo-Cy3MS0-l.mjs";
-import { b as getCurrentUser, i as isSupabaseConfigured, s as supabase, a as setCurrentUser } from "./router-BmcCHDYy.mjs";
+import { b as getCurrentUser, i as isSupabaseConfigured, s as supabase, a as setCurrentUser } from "./router-DBqFSJ_k.mjs";
 import { t as toast } from "../_libs/sonner.mjs";
 import { C as Clock, w as ShieldCheck, p as Check, L as LoaderCircle } from "../_libs/lucide-react.mjs";
 import "../_libs/tanstack__router-core.mjs";

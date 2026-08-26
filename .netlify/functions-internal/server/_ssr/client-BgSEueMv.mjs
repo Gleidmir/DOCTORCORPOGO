@@ -2,7 +2,7 @@ import { r as reactExports, j as jsxRuntimeExports } from "../_libs/react.mjs";
 import { d as useNavigate } from "../_libs/tanstack__react-router.mjs";
 import { B as BarberGoLogo } from "./logo-Cy3MS0-l.mjs";
 import { t as toast } from "../_libs/sonner.mjs";
-import { g as getBarberShopProfile, u as updatePageMeta, d as checkSubscriptionStatus, b as getCurrentUser, D as DEFAULT_ADMIN_PHONE, l as logout, e as getServices, f as getBarbers, h as getAppointments, j as addAppointment, a as setCurrentUser, k as deleteClientAppointments, m as updateAppointmentStatus } from "./router-BmcCHDYy.mjs";
+import { g as getBarberShopProfile, u as updatePageMeta, d as checkSubscriptionStatus, b as getCurrentUser, D as DEFAULT_ADMIN_PHONE, l as logout, e as getServices, f as getBarbers, h as getAppointments, j as addAppointment, a as setCurrentUser, k as deleteClientAppointments, m as updateAppointmentStatus } from "./router-DBqFSJ_k.mjs";
 import { X, b as LogOut, T as TriangleAlert, C as Clock, c as ChevronRight, d as ChevronLeft, e as CircleCheck, f as Trash2, g as CalendarCheck } from "../_libs/lucide-react.mjs";
 import "../_libs/tanstack__router-core.mjs";
 import "../_libs/tanstack__history.mjs";
