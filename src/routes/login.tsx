@@ -9,9 +9,13 @@ import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import { updatePageMeta, DEFAULT_OG_IMAGE } from "../lib/meta";
 
 export const Route = createFileRoute("/login")({
-  loader: async ({ location }) => {
-    const search = location.search as Record<string, string | undefined>;
-    const tenant = search?.t || search?.barberia || search?.clinica || "";
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      t: (search.t as string) || (search.barberia as string) || (search.clinica as string) || "",
+    };
+  },
+  loader: async ({ search }) => {
+    const tenant = search.t || "";
     if (tenant) {
       const profile = await getBarberShopProfile(tenant);
       return { profile };
