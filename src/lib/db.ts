@@ -949,18 +949,16 @@ export const updateAppointmentStatus = async (
 ): Promise<void> => {
   if (isSupabaseConfigured) {
     try {
-      const tenantId = await resolveTenantId();
       const { error } = await supabase
         .from("appointments")
         .update({ status })
-        .eq("id", id)
-        .eq("tenant_id", tenantId);
+        .eq("id", id);
       if (error) throw error;
       
       if (status === "completed") {
-        toast.success("Agendamento concluído no Supabase!");
+        toast.success("Agendamento concluído!");
       } else if (status === "cancelled") {
-        toast.error("Agendamento cancelado no Supabase.");
+        toast.error("Agendamento cancelado!");
       }
       return;
     } catch (e) {
