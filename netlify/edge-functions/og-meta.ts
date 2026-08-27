@@ -57,11 +57,11 @@ export default async (request: Request, context: Context) => {
   const finalImage = shopLogo || DEFAULT_OG_IMAGE;
   const imageType = finalImage.toLowerCase().endsWith(".png") ? "image/png" : "image/jpeg";
 
-  // Clean out any existing og:image, og:title, twitter meta tags to avoid conflicts
+  // Wipe out ANY default title, og: or twitter: meta tags regardless of attribute order
+  const bulletproofMetaRegex = /<meta\s+[^>]*?(?:property="og:[^"]*"|name="og:[^"]*"|name="twitter:[^"]*"|property="twitter:[^"]*"|name="description")[^>]*?\/?>/gi;
   html = html
-    .replace(/<title>.*?<\/title>/i, "")
-    .replace(/<meta\s+property="og:[^"]*"\s*\/?>/gi, "")
-    .replace(/<meta\s+name="twitter:[^"]*"\s*\/?>/gi, "");
+    .replace(/<title>.*?<\/title>/gi, "")
+    .replace(bulletproofMetaRegex, "");
 
   // Inject fresh complete Open Graph tags before </head>
   const metaTagsToInject = `
