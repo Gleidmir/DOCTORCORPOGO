@@ -12,20 +12,16 @@ export default async (request: Request, context: Context) => {
   const url = new URL(request.url);
   const tenantParam = url.searchParams.get("t") || url.searchParams.get("barberia") || url.searchParams.get("clinica");
 
+  const response = await context.next();
   let html = "";
   try {
-    const indexUrl = new URL("/index.html", request.url);
-    const indexRes = await fetch(indexUrl);
-    html = await indexRes.text();
+    html = await response.text();
   } catch (e) {
-    const res = await context.next();
-    return res;
+    return response;
   }
 
-  if (!tenantParam) {
-    return new Response(html, {
-      headers: { "content-type": "text/html; charset=utf-8" },
-    });
+  if (!tenantParam || !html) {
+    return response;
   }
 
   const cleanTenant = tenantParam.trim();

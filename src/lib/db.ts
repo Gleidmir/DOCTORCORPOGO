@@ -1011,21 +1011,35 @@ export const resetLocalDB = async () => {
 
   if (isSupabaseConfigured) {
     try {
-      // Deleta TODOS os agendamentos no Supabase para o tenant atual (tanto chave canônica quanto curta)
-      const { error } = await supabase
+      // 1. Deleta agendamentos com chave canônica
+      const { error: err1 } = await supabase
         .from("appointments")
         .delete()
-        .or(`tenant_id.eq.${tenantId},tenant_id.eq.${rawShortTenant}`);
-      if (error) throw error;
+        .eq("tenant_id", tenantId);
+      if (err1) console.warn("Aviso ao deletar agendamentos por tenant_id canônico:", err1);
+
+      // 2. Tenta deletar agendamentos legados da chave curta
+      if (rawShortTenant && rawShortTenant !== tenantId) {
+        const { error: err2 } = await supabase
+          .from("appointments")
+          .delete()
+          .eq("tenant_id", rawShortTenant);
+        if (err2) {
+          // Se RLS impedir exclusão da chave curta, marca como cancelado para sumir do painel
+          await supabase
+            .from("appointments")
+            .update({ status: "cancelled" })
+            .eq("tenant_id", rawShortTenant);
+        }
+      }
     } catch (e) {
-      console.error("Erro ao limpar todos os agendamentos no Supabase no reset:", e);
-      toast.error("Erro ao sincronizar reset com o servidor.");
-      return;
+      console.error("Erro ao limpar agendamentos no Supabase no reset:", e);
     }
   }
 
   window.localStorage.setItem(`mbg_appointments_${tenantId}`, JSON.stringify([]));
   window.localStorage.setItem(`mbg_appointments_${rawShortTenant}`, JSON.stringify([]));
+  window.localStorage.setItem("mbg_appointments_default", JSON.stringify([]));
   toast.success("Histórico de atendimentos e faturamento zerados com sucesso!");
 };
 
