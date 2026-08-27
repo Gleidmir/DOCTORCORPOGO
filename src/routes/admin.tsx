@@ -912,13 +912,14 @@ function AdminDashboard() {
                     Compartilhe este link com seus clientes nas redes sociais ou WhatsApp para que eles agendem sozinhos:
                   </p>
                   <p className="text-[11px] font-mono text-zinc-500 mt-1 select-all break-all">
-                    {typeof window !== "undefined" ? `${window.location.origin}/client?t=${session?.email || "default"}${shopLogoUrl ? `&v=${encodeURIComponent(shopLogoUrl.slice(-8))}` : ""}` : ""}
+                    {typeof window !== "undefined" ? `${window.location.origin}/client?t=${session?.email || "default"}${shopLogoUrl ? `&v=${shopLogoUrl.replace(/[^a-zA-Z0-9]/g, "").slice(-8)}` : ""}` : ""}
                   </p>
                 </div>
                 <div className="flex gap-2 w-full md:w-auto shrink-0">
                   <button
                     onClick={() => {
-                      const logoVersion = shopLogoUrl ? `&v=${encodeURIComponent(shopLogoUrl.slice(-8))}` : "";
+                      const cleanLogo = shopLogoUrl ? shopLogoUrl.replace(/[^a-zA-Z0-9]/g, "").slice(-8) : "";
+                      const logoVersion = cleanLogo ? `&v=${cleanLogo}` : "";
                       const url = `${window.location.origin}/client?t=${session?.email || "default"}${logoVersion}`;
                       navigator.clipboard.writeText(url);
                       toast.success("Link de agendamento copiado com sucesso!");
@@ -930,8 +931,8 @@ function AdminDashboard() {
                   <a
                     href={`https://wa.me/?text=${encodeURIComponent(
                       shopName
-                        ? `Olá! Agende sua avaliação na clínica: *${shopName.toUpperCase()}* online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email || "default"}${shopLogoUrl ? `&v=${encodeURIComponent(shopLogoUrl.slice(-8))}` : ""}`
-                        : `Olá! Agende sua avaliação na nossa clínica online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email || "default"}${shopLogoUrl ? `&v=${encodeURIComponent(shopLogoUrl.slice(-8))}` : ""}`
+                        ? `Olá! Agende sua avaliação na clínica: *${shopName.toUpperCase()}* online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email || "default"}${shopLogoUrl ? `&v=${shopLogoUrl.replace(/[^a-zA-Z0-9]/g, "").slice(-8)}` : ""}`
+                        : `Olá! Agende sua avaliação na nossa clínica online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email || "default"}${shopLogoUrl ? `&v=${shopLogoUrl.replace(/[^a-zA-Z0-9]/g, "").slice(-8)}` : ""}`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
