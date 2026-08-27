@@ -52,6 +52,7 @@ import {
   getServices,
   getDashboardStats,
   updateAppointmentStatus,
+  deleteAppointment,
   addService,
   updateService,
   deleteService,
@@ -308,6 +309,19 @@ function AdminDashboard() {
       setLoading(true);
       try {
         await updateAppointmentStatus(id, "cancelled");
+        await loadAllData();
+      } catch (e) {
+        console.error(e);
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleDeleteApt = async (id: string) => {
+    if (confirm("Deseja realmente apagar este agendamento permanentemente?")) {
+      setLoading(true);
+      try {
+        await deleteAppointment(id);
         await loadAllData();
       } catch (e) {
         console.error(e);
@@ -1157,12 +1171,19 @@ function AdminDashboard() {
                               </a>
                               <button
                                 onClick={() => handleCompleteApt(apt.id)}
-                                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 px-3.5 py-2 text-xs font-bold transition-all shadow shadow-emerald-500/10"
+                                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 px-3.5 py-2 text-xs font-bold transition-all shadow shadow-emerald-500/10 cursor-pointer"
                               >
                                 <Check className="h-3.5 w-3.5" /> Concluir
                               </button>
                             </>
                           )}
+                          <button
+                            onClick={() => handleDeleteApt(apt.id)}
+                            className="p-2 rounded-xl bg-zinc-900/80 border border-zinc-800 text-zinc-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/30 transition-all shadow-sm flex items-center justify-center cursor-pointer ml-1"
+                            title="Apagar Agendamento da Lista"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </div>
                       </div>
                     </div>

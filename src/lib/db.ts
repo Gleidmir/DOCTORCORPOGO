@@ -1009,36 +1009,63 @@ export const resetLocalDB = async () => {
 
   if (isSupabaseConfigured) {
     try {
-      // 1. Deleta agendamentos com chave canônica
-      const { error: err1 } = await supabase
-        .from("appointments")
-        .delete()
-        .eq("tenant_id", tenantId);
-      if (err1) console.warn("Aviso ao deletar agendamentos por tenant_id canônico:", err1);
+      const anonKey = "sb_publishable_D-2zZjJok7kV7V4-cvu9Wg_azYUv1tc";
+      const supabaseUrl = "https://jivbwqghmiwxgrljkmrp.supabase.co";
 
-      // 2. Tenta deletar agendamentos legados da chave curta
-      if (rawShortTenant && rawShortTenant !== tenantId) {
-        const { error: err2 } = await supabase
-          .from("appointments")
-          .delete()
-          .eq("tenant_id", rawShortTenant);
-        if (err2) {
-          // Se RLS impedir exclusão da chave curta, marca como cancelado para sumir do painel
-          await supabase
-            .from("appointments")
-            .update({ status: "cancelled" })
-            .eq("tenant_id", rawShortTenant);
+      // Purga completa no Supabase via REST API para todas as chaves de tenant
+      await fetch(
+        `${supabaseUrl}/rest/v1/appointments?or=(tenant_id.eq.${encodeURIComponent(tenantId)},tenant_id.eq.${encodeURIComponent(rawShortTenant)},tenant_id.eq.default)`,
+        {
+          method: "DELETE",
+          headers: {
+            apikey: anonKey,
+            Authorization: `Bearer ${anonKey}`,
+          },
         }
+      );
+
+      await supabase.from("appointments").delete().eq("tenant_id", tenantId);
+      if (rawShortTenant && rawShortTenant !== tenantId) {
+        await supabase.from("appointments").delete().eq("tenant_id", rawShortTenant);
       }
     } catch (e) {
-      console.error("Erro ao limpar agendamentos no Supabase no reset:", e);
+      console.error("Erro ao zerar agendamentos no Supabase:", e);
     }
   }
 
   window.localStorage.setItem(`mbg_appointments_${tenantId}`, JSON.stringify([]));
   window.localStorage.setItem(`mbg_appointments_${rawShortTenant}`, JSON.stringify([]));
   window.localStorage.setItem("mbg_appointments_default", JSON.stringify([]));
+  window.localStorage.setItem("mbg_appointments", JSON.stringify([]));
   toast.success("Histórico de atendimentos e faturamento zerados com sucesso!");
+};
+
+export const deleteAppointment = async (id: string): Promise<void> => {
+  if (isSupabaseConfigured) {
+    try {
+      const anonKey = "sb_publishable_D-2zZjJok7kV7V4-cvu9Wg_azYUv1tc";
+      const supabaseUrl = "https://jivbwqghmiwxgrljkmrp.supabase.co";
+
+      await fetch(`${supabaseUrl}/rest/v1/appointments?id=eq.${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: {
+          apikey: anonKey,
+          Authorization: `Bearer ${anonKey}`,
+        },
+      });
+
+      await supabase.from("appointments").delete().eq("id", id);
+      toast.success("Agendamento excluído com sucesso!");
+      return;
+    } catch (e) {
+      console.error("Erro ao excluir agendamento:", e);
+    }
+  }
+
+  const apts = await getAppointments();
+  const filtered = apts.filter((a) => a.id !== id);
+  setStorageItem("mbg_appointments", filtered);
+  toast.success("Agendamento excluído!");
 };
 
 export const deleteClientAppointments = async (clientPhone: string): Promise<void> => {
