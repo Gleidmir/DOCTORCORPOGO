@@ -2,14 +2,26 @@ import type { Context } from "@netlify/edge-functions";
 
 const SUPABASE_URL = "https://jivbwqghmiwxgrljkmrp.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_D-2zZjJok7kV7V4-cvu9Wg_azYUv1tc";
-const DEFAULT_OG_IMAGE = "https://doctorcorpogo.netlify.app/og_image.png?v=5";
+const DEFAULT_OG_IMAGE = "https://doctorcorpogo.netlify.app/og_image.png?v=6";
 
 export default async (request: Request, context: Context) => {
   const url = new URL(request.url);
   const tenantParam = url.searchParams.get("t") || url.searchParams.get("barberia") || url.searchParams.get("clinica");
 
+  let html = "";
+  try {
+    const indexUrl = new URL("/index.html", request.url);
+    const indexRes = await fetch(indexUrl);
+    html = await indexRes.text();
+  } catch (e) {
+    const res = await context.next();
+    return res;
+  }
+
   if (!tenantParam) {
-    return context.next();
+    return new Response(html, {
+      headers: { "content-type": "text/html; charset=utf-8" },
+    });
   }
 
   const cleanTenant = tenantParam.trim();
@@ -33,31 +45,46 @@ export default async (request: Request, context: Context) => {
       }
     }
   } catch (e) {
-    console.error("Edge function Supabase fetch error:", e);
+    console.error("Edge function fetch error:", e);
   }
 
-  const response = await context.next();
-  if (!shopLogo && !shopName) {
-    return response;
-  }
-
-  const html = await response.text();
   const finalTitle = shopName ? `${shopName} — Agendamento Online` : "Painel do Cliente - DoctorCorpo GO";
   const finalDescription = shopName ? `Agende seu horário na clínica ${shopName} online de forma rápida e prática!` : "DoctorCorpo GO — Sistema de agendamento online fácil e prático.";
   const finalImage = shopLogo || DEFAULT_OG_IMAGE;
 
-  const modifiedHtml = html
-    .replace(/<title>.*?<\/title>/i, `<title>${finalTitle}</title>`)
-    .replace(/<meta property="og:title" content=".*?"\s*\/?>/gi, `<meta property="og:title" content="${finalTitle}" />`)
-    .replace(/<meta property="og:description" content=".*?"\s*\/?>/gi, `<meta property="og:description" content="${finalDescription}" />`)
-    .replace(/<meta property="og:image" content=".*?"\s*\/?>/gi, `<meta property="og:image" content="${finalImage}" />`)
-    .replace(/<meta property="og:image:secure_url" content=".*?"\s*\/?>/gi, `<meta property="og:image:secure_url" content="${finalImage}" />`)
-    .replace(/<meta name="twitter:title" content=".*?"\s*\/?>/gi, `<meta name="twitter:title" content="${finalTitle}" />`)
-    .replace(/<meta name="twitter:description" content=".*?"\s*\/?>/gi, `<meta name="twitter:description" content="${finalDescription}" />`)
-    .replace(/<meta name="twitter:image" content=".*?"\s*\/?>/gi, `<meta name="twitter:image" content="${finalImage}" />`);
+  // Replace or inject meta tags
+  if (/<\/title>/i.test(html)) {
+    html = html.replace(/<title>.*?<\/title>/i, `<title>${finalTitle}</title>`);
+  }
 
-  return new Response(modifiedHtml, {
-    status: response.status,
-    headers: response.headers,
+  const setMetaProp = (prop: string, val: string) => {
+    const reg = new RegExp(`<meta\\s+property="${prop}"\\s+content="[^"]*"\\s*\\/?>`, "gi");
+    if (reg.test(html)) {
+      html = html.replace(reg, `<meta property="${prop}" content="${val}" />`);
+    } else {
+      html = html.replace("</head>", `<meta property="${prop}" content="${val}" />\n</head>`);
+    }
+  };
+
+  const setMetaName = (name: string, val: string) => {
+    const reg = new RegExp(`<meta\\s+name="${name}"\\s+content="[^"]*"\\s*\\/?>`, "gi");
+    if (reg.test(html)) {
+      html = html.replace(reg, `<meta name="${name}" content="${val}" />`);
+    } else {
+      html = html.replace("</head>", `<meta name="${name}" content="${val}" />\n</head>`);
+    }
+  };
+
+  setMetaProp("og:title", finalTitle);
+  setMetaProp("og:description", finalDescription);
+  setMetaProp("og:image", finalImage);
+  setMetaProp("og:image:secure_url", finalImage);
+
+  setMetaName("twitter:title", finalTitle);
+  setMetaName("twitter:description", finalDescription);
+  setMetaName("twitter:image", finalImage);
+
+  return new Response(html, {
+    headers: { "content-type": "text/html; charset=utf-8" },
   });
 };

@@ -931,7 +931,9 @@ function AdminDashboard() {
                   </button>
                   <a
                     href={`https://wa.me/?text=${encodeURIComponent(
-                      `${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email ? session.email.split("@")[0] : "default"}${shopLogoUrl ? `&v=${shopLogoUrl.replace(/[^a-zA-Z0-9]/g, "").slice(-8)}2` : "&v=2"}`
+                      shopName
+                        ? `Olá! Agende sua avaliação na clínica: *${shopName.toUpperCase()}* online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email ? session.email.split("@")[0] : "default"}${shopLogoUrl ? `&v=${shopLogoUrl.replace(/[^a-zA-Z0-9]/g, "").slice(-8)}3` : "&v=3"}`
+                        : `Olá! Agende sua avaliação na nossa clínica online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email ? session.email.split("@")[0] : "default"}${shopLogoUrl ? `&v=${shopLogoUrl.replace(/[^a-zA-Z0-9]/g, "").slice(-8)}3` : "&v=3"}`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
