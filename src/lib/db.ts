@@ -1309,11 +1309,13 @@ export const getBarberShopProfile = async (tenantId: string): Promise<BarberShop
   const targetTenantId = (!tenantId || tenantId === "default") ? getCurrentTenantId() : tenantId;
   if (isSupabaseConfigured) {
     try {
-      const { data, error } = await supabase
-        .from("barber_shops")
-        .select("*")
-        .eq("tenant_id", targetTenantId)
-        .maybeSingle();
+      let query = supabase.from("barber_shops").select("*");
+      if (targetTenantId.includes("@")) {
+        query = query.eq("tenant_id", targetTenantId);
+      } else {
+        query = query.or(`tenant_id.eq.${targetTenantId},tenant_id.like.${targetTenantId}@%`);
+      }
+      const { data, error } = await query.maybeSingle();
       
       if (error) throw error;
       
