@@ -73,7 +73,20 @@ export const getCurrentTenantId = (): string => {
   const isClientRoute = typeof window !== "undefined" && window.location.pathname.includes("/client");
   if (isClientRoute) {
     const clientTenant = window.localStorage.getItem("mbg_client_tenant");
-    if (clientTenant) return clientTenant;
+    if (clientTenant) {
+      if (!clientTenant.includes("@")) {
+        const canonical = window.localStorage.getItem(`mbg_canonical_tenant_${clientTenant}`);
+        if (canonical) return canonical;
+        const profileStr = window.localStorage.getItem(`mbg_profile_${clientTenant}`);
+        if (profileStr) {
+          try {
+            const prof = JSON.parse(profileStr);
+            if (prof?.tenantId) return prof.tenantId;
+          } catch (e) {}
+        }
+      }
+      return clientTenant;
+    }
   }
 
   const sessionItem = window.localStorage.getItem("mbg_session");
@@ -88,7 +101,55 @@ export const getCurrentTenantId = (): string => {
     }
   }
   const clientTenant = window.localStorage.getItem("mbg_client_tenant");
+  if (clientTenant && !clientTenant.includes("@")) {
+    const canonical = window.localStorage.getItem(`mbg_canonical_tenant_${clientTenant}`);
+    if (canonical) return canonical;
+  }
   return clientTenant || "default";
+};
+
+export const resolveTenantId = async (inputTenantId?: string): Promise<string> => {
+  const tid = inputTenantId || getCurrentTenantId();
+  if (!tid || tid === "default") return tid;
+
+  if (tid.includes("@")) return tid;
+
+  if (typeof window !== "undefined") {
+    const canonical = window.localStorage.getItem(`mbg_canonical_tenant_${tid}`);
+    if (canonical) return canonical;
+
+    const profileStr = window.localStorage.getItem(`mbg_profile_${tid}`);
+    if (profileStr) {
+      try {
+        const prof = JSON.parse(profileStr);
+        if (prof?.tenantId) return prof.tenantId;
+      } catch (e) {}
+    }
+  }
+
+  if (isSupabaseConfigured) {
+    try {
+      const { data } = await supabase
+        .from("barber_shops")
+        .select("tenant_id")
+        .or(`tenant_id.eq.${tid},tenant_id.like.${tid}@%`)
+        .maybeSingle();
+
+      if (data?.tenant_id) {
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem(`mbg_canonical_tenant_${tid}`, data.tenant_id);
+          if (window.location.pathname.includes("/client")) {
+            window.localStorage.setItem("mbg_client_tenant", data.tenant_id);
+          }
+        }
+        return data.tenant_id;
+      }
+    } catch (e) {
+      console.warn("Erro ao resolver canonical tenantId:", e);
+    }
+  }
+
+  return tid;
 };
 
 const getTenantKey = (key: string): string => {
@@ -257,7 +318,7 @@ let isSeedingServices: Promise<any> | null = null;
 export const getServices = async (): Promise<Service[]> => {
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { data, error } = await supabase
         .from("services")
         .select("*")
@@ -265,9 +326,9 @@ export const getServices = async (): Promise<Service[]> => {
         .order("name", { ascending: true });
       if (error) throw error;
       
-      // Se for um novo tenant e não houver nenhum serviço cadastrado no Supabase,
+      // Se for o tenant 'default' (demo) e não houver nenhum serviço cadastrado no Supabase,
       // popula com os serviços padrões do sistema de forma segura contra concorrência
-      if (data && data.length === 0) {
+      if (data && data.length === 0 && tenantId === "default") {
         if (isSeedingServices) {
           await isSeedingServices;
           const { data: refetchedData } = await supabase
@@ -322,7 +383,7 @@ export const addService = async (service: Omit<Service, "id">): Promise<Service>
 
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { error } = await supabase.from("services").insert({
         id: newService.id,
         name: newService.name,
@@ -350,7 +411,7 @@ export const addService = async (service: Omit<Service, "id">): Promise<Service>
 export const updateService = async (updatedService: Service): Promise<void> => {
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { error } = await supabase
         .from("services")
         .update({
@@ -381,7 +442,7 @@ export const updateService = async (updatedService: Service): Promise<void> => {
 export const deleteService = async (id: string): Promise<void> => {
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { error } = await supabase
         .from("services")
         .delete()
@@ -407,16 +468,30 @@ let isSeedingBarbers: Promise<any> | null = null;
 export const getBarbers = async (): Promise<Barber[]> => {
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { data, error } = await supabase
         .from("barbers")
         .select("*")
         .eq("tenant_id", tenantId);
       if (error) throw error;
+
+      // Se o tenant for canônico (contém @), remove registros de barbeiros mock auto-gerados sob a chave curta
+      if (tenantId.includes("@")) {
+        const rawShortTenant = tenantId.split("@")[0];
+        if (rawShortTenant && rawShortTenant !== tenantId) {
+          supabase
+            .from("barbers")
+            .delete()
+            .eq("tenant_id", rawShortTenant)
+            .then(({ error: delErr }) => {
+              if (delErr) console.warn("Erro ao limpar barbeiros de teste antigos:", delErr);
+            });
+        }
+      }
       
-      // Se for um novo tenant e não houver nenhum barbeiro cadastrado no Supabase,
+      // Se for o tenant 'default' (demo) e não houver nenhum barbeiro cadastrado no Supabase,
       // popula com os barbeiros padrões do sistema de forma segura contra concorrência
-      if (data && data.length === 0) {
+      if (data && data.length === 0 && tenantId === "default") {
         if (isSeedingBarbers) {
           await isSeedingBarbers;
           const { data: refetchedData } = await supabase
@@ -455,7 +530,7 @@ export const getBarbers = async (): Promise<Barber[]> => {
         }
       }
       
-      if (data && data.length > 0) {
+      if (data) {
         return data.map(mapBarberFromDB);
       }
     } catch (e) {
@@ -481,7 +556,7 @@ export const addBarber = async (barber: Omit<Barber, "id">): Promise<Barber> => 
 
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { error } = await supabase.from("barbers").insert({
         id: newBarber.id,
         name: newBarber.name,
@@ -531,7 +606,7 @@ export const addBarber = async (barber: Omit<Barber, "id">): Promise<Barber> => 
 export const updateBarber = async (updatedBarber: Barber): Promise<void> => {
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { error } = await supabase
         .from("barbers")
         .update({
@@ -587,7 +662,7 @@ export const updateBarber = async (updatedBarber: Barber): Promise<void> => {
 export const deleteBarber = async (id: string): Promise<void> => {
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { error } = await supabase
         .from("barbers")
         .delete()
@@ -611,7 +686,7 @@ export const deleteBarber = async (id: string): Promise<void> => {
 export const getClients = async (): Promise<Client[]> => {
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { data, error } = await supabase
         .from("clients")
         .select("*")
@@ -627,7 +702,7 @@ export const getClients = async (): Promise<Client[]> => {
 };
 
 export const addClient = async (name: string, phone: string, email?: string): Promise<Client> => {
-  const tenantId = getCurrentTenantId();
+  const tenantId = await resolveTenantId();
   const newClient: Client = {
     id: `c_${Date.now()}`,
     name,
@@ -680,7 +755,7 @@ export const addClient = async (name: string, phone: string, email?: string): Pr
 export const updateClient = async (updatedClient: Client): Promise<void> => {
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { error } = await supabase
         .from("clients")
         .update({
@@ -710,7 +785,7 @@ export const updateClient = async (updatedClient: Client): Promise<void> => {
 export const deleteClient = async (id: string): Promise<void> => {
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { error } = await supabase
         .from("clients")
         .delete()
@@ -734,13 +809,20 @@ export const deleteClient = async (id: string): Promise<void> => {
 export const getAppointments = async (): Promise<Appointment[]> => {
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
-      const { data, error } = await supabase
-        .from("appointments")
-        .select("*")
-        .eq("tenant_id", tenantId)
+      const tenantId = await resolveTenantId();
+      const rawShortTenant = tenantId.includes("@") ? tenantId.split("@")[0] : tenantId;
+
+      let query = supabase.from("appointments").select("*");
+      if (tenantId.includes("@")) {
+        query = query.or(`tenant_id.eq.${tenantId},tenant_id.eq.${rawShortTenant}`);
+      } else {
+        query = query.or(`tenant_id.eq.${tenantId},tenant_id.like.${tenantId}@%`);
+      }
+
+      const { data, error } = await query
         .order("date", { ascending: false })
         .order("time", { ascending: false });
+
       if (error) throw error;
       return (data || []).map(mapAppointmentFromDB);
     } catch (e) {
@@ -780,7 +862,7 @@ export const addAppointment = async (
 
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { error } = await supabase.from("appointments").insert({
         id: newApt.id,
         client_id: newApt.clientId,
@@ -867,7 +949,7 @@ export const updateAppointmentStatus = async (
 ): Promise<void> => {
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      const tenantId = await resolveTenantId();
       const { error } = await supabase
         .from("appointments")
         .update({ status })
@@ -924,15 +1006,16 @@ export const logout = () => {
 
 export const resetLocalDB = async () => {
   if (isServer) return;
-  const tenantId = getCurrentTenantId();
+  const tenantId = await resolveTenantId();
+  const rawShortTenant = tenantId.includes("@") ? tenantId.split("@")[0] : tenantId;
 
   if (isSupabaseConfigured) {
     try {
-      // Deleta TODOS os agendamentos no Supabase para o tenant atual
+      // Deleta TODOS os agendamentos no Supabase para o tenant atual (tanto chave canônica quanto curta)
       const { error } = await supabase
         .from("appointments")
         .delete()
-        .eq("tenant_id", tenantId);
+        .or(`tenant_id.eq.${tenantId},tenant_id.eq.${rawShortTenant}`);
       if (error) throw error;
     } catch (e) {
       console.error("Erro ao limpar todos os agendamentos no Supabase no reset:", e);
@@ -941,23 +1024,30 @@ export const resetLocalDB = async () => {
     }
   }
 
-  const appointmentsKey = `mbg_appointments_${tenantId}`;
-  window.localStorage.setItem(appointmentsKey, JSON.stringify([]));
+  window.localStorage.setItem(`mbg_appointments_${tenantId}`, JSON.stringify([]));
+  window.localStorage.setItem(`mbg_appointments_${rawShortTenant}`, JSON.stringify([]));
   toast.success("Histórico de atendimentos e faturamento zerados com sucesso!");
 };
 
 export const deleteClientAppointments = async (clientPhone: string): Promise<void> => {
+  const cleanPhone = clientPhone.replace(/\D/g, "");
+  const shortPhone = cleanPhone.length > 10 && cleanPhone.startsWith("55") ? cleanPhone.slice(2) : cleanPhone;
+  const fullPhone = cleanPhone.length <= 11 ? "55" + cleanPhone : cleanPhone;
+
+  const tenantId = await resolveTenantId();
+  const rawShortTenant = tenantId.includes("@") ? tenantId.split("@")[0] : tenantId;
+
   if (isSupabaseConfigured) {
     try {
-      const tenantId = getCurrentTenantId();
+      // Deleta agendamentos do cliente no Supabase (suportando variações de telefone e tenant_id)
       const { error } = await supabase
         .from("appointments")
         .delete()
-        .eq("tenant_id", tenantId)
-        .eq("client_phone", clientPhone)
-        .neq("status", "completed");
+        .or(`tenant_id.eq.${tenantId},tenant_id.eq.${rawShortTenant}`)
+        .or(`client_phone.eq.${cleanPhone},client_phone.eq.${shortPhone},client_phone.eq.${fullPhone}`);
+
       if (error) throw error;
-      toast.success("Histórico limpo no Supabase!");
+      toast.success("Histórico de agendamentos limpo!");
       return;
     } catch (e) {
       console.error("Erro ao limpar histórico no Supabase:", e);
@@ -965,13 +1055,15 @@ export const deleteClientAppointments = async (clientPhone: string): Promise<voi
     }
   }
 
-  const tenantId = getCurrentTenantId();
   const appointmentsKey = `mbg_appointments_${tenantId}`;
   const appointmentsStr = window.localStorage.getItem(appointmentsKey);
   if (appointmentsStr) {
     try {
       const appointments = JSON.parse(appointmentsStr) as Appointment[];
-      const filtered = appointments.filter((a) => a.clientPhone !== clientPhone || a.status === "completed");
+      const filtered = appointments.filter((a) => {
+        const aPhone = a.clientPhone.replace(/\D/g, "");
+        return aPhone !== cleanPhone && aPhone !== shortPhone && aPhone !== fullPhone;
+      });
       window.localStorage.setItem(appointmentsKey, JSON.stringify(filtered));
       toast.success("Histórico limpo localmente!");
     } catch (e) {
@@ -1330,6 +1422,10 @@ export const getBarberShopProfile = async (tenantId: string): Promise<BarberShop
           subscriptionExpiresAt: data.subscription_expires_at || undefined,
         };
         if (!isServer) {
+          window.localStorage.setItem(`mbg_canonical_tenant_${targetTenantId}`, data.tenant_id);
+          if (window.location.pathname.includes("/client")) {
+            window.localStorage.setItem("mbg_client_tenant", data.tenant_id);
+          }
           const configKey = `mbg_tenant_config_${targetTenantId}`;
           const currentConfigStr = window.localStorage.getItem(configKey);
           let isRecreated = false;

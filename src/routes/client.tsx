@@ -97,7 +97,9 @@ export const Route = createFileRoute("/client")({
 
 function ClientDashboard() {
   const navigate = useNavigate();
-  
+  const loaderData = Route.useLoaderData() as { profile: BarberShopProfile | null } | undefined;
+  const initialProfile = loaderData?.profile || null;
+
   const handleClearSessionAndGoHome = () => {
     if (typeof window !== "undefined") {
       window.localStorage.removeItem("mbg_client_tenant");
@@ -108,9 +110,9 @@ function ClientDashboard() {
 
   const [session, setSession] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<"book" | "my-appointments">("book");
-  const [shopProfile, setShopProfile] = useState<BarberShopProfile | null>(null);
+  const [shopProfile, setShopProfile] = useState<BarberShopProfile | null>(initialProfile);
   const [subCheck, setSubCheck] = useState<SubscriptionCheck | null>(null);
-  const [profileLoaded, setProfileLoaded] = useState(false);
+  const [profileLoaded, setProfileLoaded] = useState(!!initialProfile);
 
   // Load session
   useEffect(() => {
@@ -1209,33 +1211,32 @@ function MyAppointments({ clientPhone, shopProfile }: MyAppointmentsProps) {
     if (confirm("Deseja realmente limpar todo o histórico de agendamentos?")) {
       setLoading(true);
       try {
-        // Obter os IDs de todos os agendamentos realizados (completados) para ocultar localmente
-        const completedIds = apts
-          .filter((a) => a.status === "completed")
-          .map((a) => a.id);
+        const cleanPhone = clientPhone.replace(/\D/g, "");
+        const shortPhone = cleanPhone.length > 10 && cleanPhone.startsWith("55") ? cleanPhone.slice(2) : cleanPhone;
+        const fullPhone = cleanPhone.length <= 11 ? "55" + cleanPhone : cleanPhone;
 
-        const key = `mbg_dismissed_apts_${clientPhone}`;
-        const dismissedStr = window.localStorage.getItem(key);
-        const dismissedIds = dismissedStr ? JSON.parse(dismissedStr) : [];
-        const updatedDismissed = Array.from(new Set([...dismissedIds, ...completedIds]));
-        window.localStorage.setItem(key, JSON.stringify(updatedDismissed));
+        // Salvar todos os IDs atuais como ocultos/descartados localmente para todos os formatos de telefone
+        const allCurrentIds = apts.map((a) => a.id);
+        
+        [cleanPhone, shortPhone, fullPhone, clientPhone].forEach((pKey) => {
+          if (!pKey) return;
+          const key = `mbg_dismissed_apts_${pKey}`;
+          const dismissedStr = window.localStorage.getItem(key);
+          const dismissedIds = dismissedStr ? JSON.parse(dismissedStr) : [];
+          const updated = Array.from(new Set([...dismissedIds, ...allCurrentIds]));
+          window.localStorage.setItem(key, JSON.stringify(updated));
+        });
 
-        // Deleta apenas os agendamentos pendentes ou cancelados do banco
+        // Deleta do banco
         await deleteClientAppointments(clientPhone);
         
         await loadAppointments();
+        toast.success("Histórico de agendamentos limpo com sucesso!");
       } catch (e) {
-        console.error("Erro ao limpar histórico no banco, aplicando limpeza local...", e);
-        // Fallback: salvar todos os IDs atuais como descartados localmente
-        const currentIds = apts.map((a) => a.id);
-        const key = `mbg_dismissed_apts_${clientPhone}`;
-        const dismissedStr = window.localStorage.getItem(key);
-        const dismissedIds = dismissedStr ? JSON.parse(dismissedStr) : [];
-        const updated = Array.from(new Set([...dismissedIds, ...currentIds]));
-        window.localStorage.setItem(key, JSON.stringify(updated));
-        
-        toast.success("Histórico limpo localmente!");
+        console.error("Erro ao limpar histórico:", e);
         await loadAppointments();
+      } finally {
+        setLoading(false);
       }
     }
   };
