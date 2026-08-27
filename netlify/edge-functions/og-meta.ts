@@ -4,6 +4,10 @@ const SUPABASE_URL = "https://jivbwqghmiwxgrljkmrp.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_D-2zZjJok7kV7V4-cvu9Wg_azYUv1tc";
 const DEFAULT_OG_IMAGE = "https://doctorcorpogo.netlify.app/og_image.png?v=6";
 
+export const config = {
+  path: ["/client", "/client/*"],
+};
+
 export default async (request: Request, context: Context) => {
   const url = new URL(request.url);
   const tenantParam = url.searchParams.get("t") || url.searchParams.get("barberia") || url.searchParams.get("clinica");
@@ -48,8 +52,8 @@ export default async (request: Request, context: Context) => {
     console.error("Edge function fetch error:", e);
   }
 
-  const finalTitle = shopName ? `${shopName} — Agendamento Online` : "Painel do Cliente - DoctorCorpo GO";
-  const finalDescription = shopName ? `Agende seu horário na clínica ${shopName} online de forma rápida e prática!` : "DoctorCorpo GO — Sistema de agendamento online fácil e prático.";
+  const finalTitle = shopName ? shopName : "Painel do Cliente - DoctorCorpo GO";
+  const finalDescription = "Agendamento Online";
   const finalImage = shopLogo || DEFAULT_OG_IMAGE;
 
   // Replace or inject meta tags
