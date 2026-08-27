@@ -783,7 +783,7 @@ function AdminDashboard() {
       <header className="border-b border-zinc-900 bg-zinc-950 sticky top-0 z-40 pt-[calc(28px+env(safe-area-inset-top,0px))] sm:pt-4 pb-3">
         <div className="mx-auto max-w-7xl flex items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-3 min-w-0">
-            <BarberGoLogo className="w-10 h-10 shrink-0 animate-pulse" />
+            <img src="/logo.png" alt="DoctorCorpo GO" className="w-9 h-9 object-contain shrink-0 rounded-lg" />
             <div className="min-w-0">
               <span className="text-base font-extrabold tracking-tight block truncate">DoctorCorpo <span className="text-amber-500">GO</span></span>
               <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider block truncate">Painel da Clínica</span>
@@ -931,9 +931,7 @@ function AdminDashboard() {
                   </button>
                   <a
                     href={`https://wa.me/?text=${encodeURIComponent(
-                      shopName
-                        ? `Olá! Agende sua avaliação na clínica: *${shopName.toUpperCase()}* online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email ? session.email.split("@")[0] : "default"}${shopLogoUrl ? `&v=${shopLogoUrl.replace(/[^a-zA-Z0-9]/g, "").slice(-8)}` : ""}`
-                        : `Olá! Agende sua avaliação na nossa clínica online pelo link: ${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email ? session.email.split("@")[0] : "default"}${shopLogoUrl ? `&v=${shopLogoUrl.replace(/[^a-zA-Z0-9]/g, "").slice(-8)}` : ""}`
+                      `${typeof window !== "undefined" ? window.location.origin : ""}/client?t=${session?.email ? session.email.split("@")[0] : "default"}${shopLogoUrl ? `&v=${shopLogoUrl.replace(/[^a-zA-Z0-9]/g, "").slice(-8)}2` : "&v=2"}`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
