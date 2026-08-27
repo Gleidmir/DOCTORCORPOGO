@@ -16,8 +16,9 @@ export const Route = createFileRoute("/login")({
       role: search.role ? String(search.role) : "",
     };
   },
-  loader: async ({ search }) => {
-    const tenant = search.t || "";
+  loader: async (ctx) => {
+    const search = ctx?.search as Record<string, string | undefined> | undefined;
+    const tenant = search?.t || "";
     if (tenant) {
       const profile = await getBarberShopProfile(tenant);
       return { profile };
