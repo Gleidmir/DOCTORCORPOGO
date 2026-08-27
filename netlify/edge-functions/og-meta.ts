@@ -55,38 +55,32 @@ export default async (request: Request, context: Context) => {
   const finalTitle = shopName ? shopName : "Painel do Cliente - DoctorCorpo GO";
   const finalDescription = "Agendamento Online";
   const finalImage = shopLogo || DEFAULT_OG_IMAGE;
+  const imageType = finalImage.toLowerCase().endsWith(".png") ? "image/png" : "image/jpeg";
 
-  // Replace or inject meta tags
-  if (/<\/title>/i.test(html)) {
-    html = html.replace(/<title>.*?<\/title>/i, `<title>${finalTitle}</title>`);
-  }
+  // Clean out any existing og:image, og:title, twitter meta tags to avoid conflicts
+  html = html
+    .replace(/<title>.*?<\/title>/i, "")
+    .replace(/<meta\s+property="og:[^"]*"\s*\/?>/gi, "")
+    .replace(/<meta\s+name="twitter:[^"]*"\s*\/?>/gi, "");
 
-  const setMetaProp = (prop: string, val: string) => {
-    const reg = new RegExp(`<meta\\s+property="${prop}"\\s+content="[^"]*"\\s*\\/?>`, "gi");
-    if (reg.test(html)) {
-      html = html.replace(reg, `<meta property="${prop}" content="${val}" />`);
-    } else {
-      html = html.replace("</head>", `<meta property="${prop}" content="${val}" />\n</head>`);
-    }
-  };
+  // Inject fresh complete Open Graph tags before </head>
+  const metaTagsToInject = `
+    <title>${finalTitle}</title>
+    <meta property="og:title" content="${finalTitle}" />
+    <meta property="og:description" content="${finalDescription}" />
+    <meta property="og:image" content="${finalImage}" />
+    <meta property="og:image:secure_url" content="${finalImage}" />
+    <meta property="og:image:type" content="${imageType}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${finalTitle}" />
+    <meta name="twitter:description" content="${finalDescription}" />
+    <meta name="twitter:image" content="${finalImage}" />
+  `;
 
-  const setMetaName = (name: string, val: string) => {
-    const reg = new RegExp(`<meta\\s+name="${name}"\\s+content="[^"]*"\\s*\\/?>`, "gi");
-    if (reg.test(html)) {
-      html = html.replace(reg, `<meta name="${name}" content="${val}" />`);
-    } else {
-      html = html.replace("</head>", `<meta name="${name}" content="${val}" />\n</head>`);
-    }
-  };
-
-  setMetaProp("og:title", finalTitle);
-  setMetaProp("og:description", finalDescription);
-  setMetaProp("og:image", finalImage);
-  setMetaProp("og:image:secure_url", finalImage);
-
-  setMetaName("twitter:title", finalTitle);
-  setMetaName("twitter:description", finalDescription);
-  setMetaName("twitter:image", finalImage);
+  html = html.replace("</head>", `${metaTagsToInject}\n</head>`);
 
   return new Response(html, {
     headers: { "content-type": "text/html; charset=utf-8" },
